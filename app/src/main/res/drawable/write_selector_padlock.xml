@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_activated="true"
-        android:drawable="@drawable/ic_lock" />
+        android:drawable="@drawable/write_ic_lock" />
     <item
-        android:drawable="@drawable/ic_padlock" />
+        android:drawable="@drawable/write_ic_unlock" />
 </selector>

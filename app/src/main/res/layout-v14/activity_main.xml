@@ -31,7 +31,7 @@
                     android:layout_width="27dp"
                     android:layout_height="30dp"
                     android:adjustViewBounds="true"
-                    app:srcCompat="@drawable/menu"
+                    app:srcCompat="@drawable/main_side_menu"
                     android:layout_gravity="center"
                     />
                 <Space
@@ -49,9 +49,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:checked="false"
-                        android:thumb="@drawable/thumb_selector"
+                        android:thumb="@drawable/main_thumb_selector"
                         app:switchMinWidth="118dp"
-                        app:track="@drawable/track_selector"
+                        app:track="@drawable/main_track_selector"
                         />
                     <TextView
                         android:id="@+id/txt_mode_Diary"
@@ -99,7 +99,7 @@
                         android:id="@+id/main_mode_todo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:orientation="vertical"
@@ -207,7 +207,7 @@
                                         android:layout_width="28dp"
                                         android:layout_height="28dp"
                                         android:adjustViewBounds="true"
-                                        app:srcCompat="@drawable/ic_remove_todo"
+                                        app:srcCompat="@drawable/todo_ic_remove_todo"
                                         android:layout_gravity="center"
                                         />
 
@@ -231,7 +231,7 @@
                         android:id="@+id/main_mode_diary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:orientation="vertical">
@@ -249,6 +249,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:layout_marginBottom="16dp"
                             >
                             <TextView
                                 android:layout_width="wrap_content"
@@ -263,19 +264,18 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 android:layout_marginTop="8dp"
-                                android:layout_marginBottom="16dp"
                                 tools:ignore="InvalidId">
                                 <androidx.cardview.widget.CardView
                                     android:layout_width="76dp"
                                     android:layout_height="76dp"
-                                    app:cardCornerRadius="8dp"
+                                    app:cardCornerRadius="12dp"
                                     app:cardElevation="0dp"
                                     >
                                     <ImageView
                                         android:id="@+id/img_recommended_music"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:src="@drawable/img_music"
+                                        android:src="@drawable/main_img_music1"
                                         android:layout_gravity="center"
                                         android:scaleType="centerCrop"
                                         />
@@ -298,6 +298,7 @@
                                         android:id="@+id/info_recommended_music"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
                                         android:text="Artist / Album"
                                         android:textSize="16dp"
                                         android:textColor="@color/black"/>
@@ -311,7 +312,7 @@
                                     android:layout_width="28dp"
                                     android:layout_height="28dp"
                                     android:adjustViewBounds="true"
-                                    app:srcCompat="@drawable/refresh"
+                                    app:srcCompat="@drawable/main_ic_refresh"
                                     android:layout_gravity="center"
                                     />
 
@@ -328,6 +329,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="16dp"
+
                             >
                             <TextView
                                 android:layout_width="wrap_content"
@@ -346,7 +350,7 @@
                                 <androidx.cardview.widget.CardView
                                     android:layout_width="76dp"
                                     android:layout_height="76dp"
-                                    app:cardCornerRadius="8dp"
+                                    app:cardCornerRadius="12dp"
                                     app:cardElevation="0dp"
                                     >
                                     <ImageView
@@ -370,12 +374,16 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Title"
+                                        android:ems="9"
+                                        android:maxLines="1"
+                                        android:ellipsize="end"
                                         android:textSize="20dp"
                                         android:textColor="@color/black"/>
                                     <TextView
-                                        android:id="@+id/director_recommended_movie"
+                                        android:id="@+id/info_recommended_movie"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
                                         android:text="Director"
                                         android:textSize="16dp"
                                         android:textColor="@color/black"/>
@@ -389,12 +397,19 @@
                                     android:layout_width="28dp"
                                     android:layout_height="28dp"
                                     android:adjustViewBounds="true"
-                                    app:srcCompat="@drawable/refresh"
+                                    app:srcCompat="@drawable/main_ic_refresh"
                                     android:layout_gravity="center"
                                     />
+
                             </LinearLayout>
 
                         </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5px"
+                            android:background="#C5DEDA"
+                            android:layout_marginTop="8dp"
+                            />
 
                     </LinearLayout>
 

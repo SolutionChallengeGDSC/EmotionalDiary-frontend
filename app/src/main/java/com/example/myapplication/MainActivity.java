@@ -1,36 +1,21 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CalendarView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
@@ -39,7 +24,6 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.OnRangeSelectedListener;
 import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter;
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter;
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
@@ -47,7 +31,6 @@ import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
 
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -57,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
     TextView textDiary;
     TextView textTodo;
     TextView title_recommended_music;
+    TextView info_recommended_music;
     TextView title_recommended_movie;
+    TextView info_recommended_movie;
     SwitchCompat switchChangeMode;
 
     MaterialCalendarView calendar_todo;
@@ -92,15 +77,18 @@ public class MainActivity extends AppCompatActivity {
         recommended_music = findViewById(R.id.recommended_music); // recommended_music Layout
         img_recommended_music = findViewById(R.id.img_recommended_music); // recommended_music Image
         title_recommended_music = findViewById(R.id.title_recommended_music); // recommended_music Title
+        info_recommended_music = findViewById(R.id.info_recommended_music); // recommended_music Info
         refresh_recommended_music = findViewById(R.id.refresh_recommended_music); // recommended_music refresh Button
 
-        recommended_movie = findViewById(R.id.recommended_movie); // recommended_music Layout
-        img_recommended_movie = findViewById(R.id.img_recommended_movie); // recommended_music Image
-        title_recommended_movie = findViewById(R.id.title_recommended_movie); // recommended_music Title
-        refresh_recommended_movie = findViewById(R.id.refresh_recommended_movie); // recommended_music refresh Button
+        recommended_movie = findViewById(R.id.recommended_movie); // recommended_movie Layout
+        img_recommended_movie = findViewById(R.id.img_recommended_movie); // recommended_movie Image
+        title_recommended_movie = findViewById(R.id.title_recommended_movie); // recommended_movie Title
+        info_recommended_movie = findViewById(R.id.info_recommended_movie); // recommended_movie Director
+        refresh_recommended_movie = findViewById(R.id.refresh_recommended_movie); // recommended_movie refresh Button
 
         btn_check_todo = findViewById(R.id.btn_check_todo); // todo_check button
         isChecked = false;
+
 
         btn_check_todo.setOnClickListener(new View.OnClickListener() { // todo_check Button
             @Override
@@ -113,18 +101,51 @@ public class MainActivity extends AppCompatActivity {
 
 
         /*---------------------------------------음악, 영화 추천 및 새로고침----------------------------------------------*/
+        Object[][] musicList = {{R.drawable.main_img_music1,"Stay this way","fromis_9"},
+                {R.drawable.main_img_music2,"Ditto","NewJeans"},
+                {R.drawable.main_img_music3,"DM","fromis_9"},
+                {R.drawable.main_img_music4,"Feel Good","fromis_9"},
+                {R.drawable.main_img_music5,"We go","fromis_9"},
+                {R.drawable.main_img_music6,"Love Bomb","fromis_9"},
+                {R.drawable.main_img_music7,"Talk & Talk","fromis_9"}
+        };
+        Object[][] movieList = {{R.drawable.main_img_movie1,"대외비","이원태"},
+                {R.drawable.main_img_movie2,"더 퍼스트 슬램덩크","이노우에 다케히코"},
+                {R.drawable.main_img_movie3,"앤트맨과 와스프: 퀀텀매니아","페이튼 리드"},
+                {R.drawable.main_img_movie4,"서치 2","니콜라스 D. 존슨"},
+                {R.drawable.main_img_movie5,"귀멸의 칼날: 상현집결, 그리고 도공 마을로","소토자키 하루오"},
+                {R.drawable.main_img_movie6,"아임 히어로 더 파이널","오윤동"},
+                {R.drawable.main_img_movie7,"카운트","권혁재"}
+        };
+
+
+
+        int randomNum_music = (int) (Math.random() * musicList.length);
+        img_recommended_music.setImageResource((Integer) musicList[randomNum_music][0]);
+        title_recommended_music.setText((CharSequence) musicList[randomNum_music][1]);
+        info_recommended_music.setText((CharSequence) musicList[randomNum_music][2]);
+
+        int randomNum_movie = (int) (Math.random() * movieList.length);
+        img_recommended_movie.setImageResource((Integer) movieList[randomNum_movie][0]);
+        title_recommended_movie.setText((CharSequence) movieList[randomNum_movie][1]);
+        info_recommended_movie.setText((CharSequence) movieList[randomNum_movie][2]);
+
         recommended_music.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String musicTitle = "https://www.google.com/search?q=music+"+title_recommended_music.getText().toString();
+                String musicTitle = "https://www.google.com/search?q="+ info_recommended_music.getText().toString() + " " +title_recommended_music.getText().toString();
                 Intent uriIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(musicTitle));
                 startActivity(uriIntent);
             }
         });
+
         refresh_recommended_music.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"새로고침(music)",Toast.LENGTH_SHORT).show();
+                int randomNum = (int) (Math.random() * musicList.length);
+                img_recommended_music.setImageResource((Integer) musicList[randomNum][0]);
+                title_recommended_music.setText((CharSequence) musicList[randomNum][1]);
+                info_recommended_music.setText((CharSequence) musicList[randomNum][2]);
             }
         });
 
@@ -132,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         recommended_movie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String movieTitle = "https://www.google.com/search?q=movie+"+title_recommended_movie.getText().toString();
+                String movieTitle = "https://www.google.com/search?q=movie+"+ title_recommended_movie.getText().toString();
                 Intent uriIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(movieTitle));
                 startActivity(uriIntent);
             }
@@ -140,7 +161,10 @@ public class MainActivity extends AppCompatActivity {
         refresh_recommended_movie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"새로고침(movie)",Toast.LENGTH_SHORT).show();
+                int randomNum = (int) (Math.random() * movieList.length);
+                img_recommended_movie.setImageResource((Integer) movieList[randomNum][0]);
+                title_recommended_movie.setText((CharSequence) movieList[randomNum][1]);
+                info_recommended_movie.setText((CharSequence) movieList[randomNum][2]);
             }
         });
 

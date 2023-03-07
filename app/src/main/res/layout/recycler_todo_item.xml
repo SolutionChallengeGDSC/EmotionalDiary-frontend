@@ -77,7 +77,7 @@
             android:layout_height="24dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            app:srcCompat="@drawable/ic_remove_todo"
+            app:srcCompat="@drawable/todo_ic_remove_todo"
             android:layout_gravity="center"
             />
 
