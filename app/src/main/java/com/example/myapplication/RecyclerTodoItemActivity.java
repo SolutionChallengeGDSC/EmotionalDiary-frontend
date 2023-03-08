@@ -17,11 +17,9 @@ import java.util.ArrayList;
 import androidx.appcompat.widget.AppCompatImageView;
 
 public class RecyclerTodoItemActivity extends AppCompatActivity {
-    private RecyclerView mRecyclerView;
     private TodoItem_RecyclerViewAdapter mRecyclerAdapter;
     private ArrayList<TodoItem_Item> mtodoItems = new ArrayList();
-    private ArrayList<ArrayList<TodoItem_Item>> mtodoList;
-    private AppCompatActivity btn_edit;
+
 
     LinearLayout todo_category;
     TextView txt_todo_category;
@@ -32,11 +30,11 @@ public class RecyclerTodoItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recycler_todo_item);
 
 
-        RecyclerView view = findViewById(R.id.recyclerView_TodoItem);
+        RecyclerView TodoRecyclerview = findViewById(R.id.recyclerView_TodoItem);
 
         mRecyclerAdapter = new TodoItem_RecyclerViewAdapter();
-        view.setLayoutManager(new LinearLayoutManager(this));
-        view.setAdapter(mRecyclerAdapter);
+        TodoRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        TodoRecyclerview.setAdapter(mRecyclerAdapter);
 
 
         mtodoItems = new ArrayList<>();

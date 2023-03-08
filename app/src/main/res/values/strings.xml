@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Emotional Diary</string>
 
     <string-array name="custom_weekdays">
         <item>SUN</item>

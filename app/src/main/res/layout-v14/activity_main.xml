@@ -120,9 +120,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginEnd="12dp"
                             >
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -131,95 +130,52 @@
                                 android:textColor="@color/black"
                                 />
                             <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
+                                android:id="@+id/todo_category"
+                                android:layout_width="120dp"
+                                android:layout_height="32dp"
+                                android:orientation="horizontal"
+                                android:background="@drawable/btn_round_2"
+                                android:backgroundTint="#C2DBBA"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                tools:ignore="MissingConstraints"
                                 >
-                                <LinearLayout
-                                    android:id="@+id/todo_category"
-                                    android:layout_width="120dp"
-                                    android:layout_height="32dp"
-                                    android:orientation="horizontal"
-                                    android:background="@drawable/btn_round_2"
-                                    android:backgroundTint="#C2DBBA"
-                                    android:paddingStart="10dp"
-                                    android:paddingEnd="10dp"
-                                    >
-                                    <TextView
-                                        android:id = "@+id/txt_todo_category"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Category1"
-                                        android:layout_gravity="center"
-                                        android:textColor="@color/black"
-                                        />
-                                    <View
-                                        android:layout_width="0dp"
-                                        android:layout_height="0dp"
-                                        android:layout_weight = "1"/>
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        android:layout_width="20dp"
-                                        android:layout_height="20dp"
-                                        android:adjustViewBounds="true"
-                                        app:srcCompat="@drawable/ic_add_todo"
-                                        android:layout_gravity="center|right"
-                                        />
-                                </LinearLayout>
-                                <LinearLayout
+                                <TextView
+                                    android:id = "@+id/txt_todo_category"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginStart="8dp"
-                                    >
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        android:id="@+id/btn_check_todo"
-                                        android:layout_width="20dp"
-                                        android:layout_height="20dp"
-                                        android:adjustViewBounds="true"
-                                        app:srcCompat="@drawable/selector_todo_check"
-                                        android:layout_gravity="center"
-                                        />
-                                    <TextView
-                                        android:id="@+id/txt_todo_content"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginStart="8dp"
-                                        android:text="Todo1"
-                                        android:layout_gravity="center"
-                                        android:textColor="@color/black"
-                                        />
-                                    <View
-                                        android:layout_width="0dp"
-                                        android:layout_height="0dp"
-                                        android:layout_weight = "1"/>
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        android:id="@+id/btn_edit_todo"
-                                        android:layout_width="28dp"
-                                        android:layout_height="28dp"
-                                        android:adjustViewBounds="true"
-                                        android:layout_marginEnd="4dp"
-                                        app:srcCompat="@drawable/ic_edit_todo"
-                                        android:layout_gravity="center"
-                                        />
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        android:id="@+id/btn_remove_todo"
-                                        android:layout_width="28dp"
-                                        android:layout_height="28dp"
-                                        android:adjustViewBounds="true"
-                                        app:srcCompat="@drawable/todo_ic_remove_todo"
-                                        android:layout_gravity="center"
-                                        />
-
-
-                                </LinearLayout>
+                                    android:text="Categ1"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/black"
+                                    />
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:layout_weight = "1"/>
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:adjustViewBounds="true"
+                                    app:srcCompat="@drawable/ic_add_todo"
+                                    android:layout_gravity="center|right"
+                                    />
                             </LinearLayout>
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerView_TodoItem"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                />
+
+                            <!-- 바닥과의 간격을 위해. -->
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_height="50dp"
                                 android:orientation="horizontal">
-
                             </LinearLayout>
 
 

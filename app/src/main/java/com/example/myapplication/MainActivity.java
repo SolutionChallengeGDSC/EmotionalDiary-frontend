@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -11,7 +12,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +22,8 @@ import android.widget.TextView;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
@@ -30,6 +35,7 @@ import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.time.Instant;
@@ -56,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
     AppCompatImageView refresh_recommended_movie;
     LinearLayout recommended_music;
     LinearLayout recommended_movie;
+
+    private TodoItem_RecyclerViewAdapter mRecyclerAdapter;
+    private ArrayList<TodoItem_Item> mtodoItems = new ArrayList();
+
+
+    LinearLayout todo_category;
+    TextView txt_todo_category;
+
     boolean isChecked;
 
     @Override
@@ -86,18 +100,7 @@ public class MainActivity extends AppCompatActivity {
         info_recommended_movie = findViewById(R.id.info_recommended_movie); // recommended_movie Director
         refresh_recommended_movie = findViewById(R.id.refresh_recommended_movie); // recommended_movie refresh Button
 
-        btn_check_todo = findViewById(R.id.btn_check_todo); // todo_check button
         isChecked = false;
-
-
-        btn_check_todo.setOnClickListener(new View.OnClickListener() { // todo_check Button
-            @Override
-            public void onClick(final View view) {
-                view.setActivated(!view.isActivated());
-                isChecked = isChecked == false ? true : false;
-            }
-        });
-
 
 
         /*---------------------------------------음악, 영화 추천 및 새로고침----------------------------------------------*/
@@ -255,6 +258,31 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        RecyclerView TodoRecyclerview = findViewById(R.id.recyclerView_TodoItem);
+
+        mRecyclerAdapter = new TodoItem_RecyclerViewAdapter();
+        TodoRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        TodoRecyclerview.setAdapter(mRecyclerAdapter);
+
+
+        mtodoItems = new ArrayList<>();
+        todo_category = (LinearLayout) findViewById(R.id.todo_category);
+        txt_todo_category = findViewById(R.id.txt_todo_category);
+
+
+        todo_category.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                custom_dialog(v);
+            }
+        });
+
+        for(int i = 1; i < 5; i++){
+            mtodoItems.add(new TodoItem_Item("gun" + i));
+        }
+        mRecyclerAdapter.setmTodoList(mtodoItems);
+
+
 
 
     }
@@ -301,6 +329,71 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    public void custom_dialog(View v) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_todo, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        builder.setView(dialogView);
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        TextView txt_category = dialogView.findViewById(R.id.txt_category); // dialog category
+        txt_category.setText(txt_todo_category.getText().toString());
+        EditText et_category = dialogView.findViewById(R.id.et_category);
+
+        EditText writeContents = dialogView.findViewById(R.id.writeContents);
+        AppCompatImageView btn_edit_category = dialogView.findViewById(R.id.btn_edit_category);
+        AppCompatImageView btn_edit_complete = dialogView.findViewById(R.id.btn_edit_complete);
+
+        btn_edit_category.setOnClickListener(new View.OnClickListener() { // category 편집 버튼
+            @Override
+            public void onClick(View v) {
+                et_category.setVisibility(View.VISIBLE);
+                txt_category.setVisibility(View.GONE);
+                btn_edit_category.setVisibility(View.GONE);
+                btn_edit_complete.setVisibility(View.VISIBLE);
+                et_category.setText(txt_category.getText().toString());
+            }
+        });
+        btn_edit_complete.setOnClickListener(new View.OnClickListener() { // category 편집 완료 버튼
+            @Override
+            public void onClick(View v) {
+                txt_category.setText(et_category.getText().toString());
+                et_category.setVisibility(View.GONE);
+                txt_category.setVisibility(View.VISIBLE);
+                btn_edit_category.setVisibility(View.VISIBLE);
+                btn_edit_complete.setVisibility(View.GONE);
+            }
+        });
+
+
+
+        Button ok_btn = dialogView.findViewById(R.id.saveBtn); // ok button
+        ok_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(writeContents.getText().toString().length() != 0){
+                    mtodoItems.add(new TodoItem_Item(writeContents.getText().toString()));
+                    mRecyclerAdapter.setmTodoList(mtodoItems);
+                }
+                if(txt_category.getText().toString().length() != 0){
+                    txt_todo_category.setText(txt_category.getText().toString());
+                }
+                alertDialog.dismiss();
+            }
+        });
+
+        Button cancle_btn = dialogView.findViewById(R.id.cancelBtn);
+        cancle_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+    }
+
 
 
 }
