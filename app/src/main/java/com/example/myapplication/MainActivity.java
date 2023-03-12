@@ -1,9 +1,5 @@
 package com.example.myapplication;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -19,9 +15,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,16 +34,23 @@ import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter;
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
 
-
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 
-import java.time.Instant;
-import java.time.ZoneId;
-
-
 public class MainActivity extends AppCompatActivity {
+    /*------------------------------------------Side Menu------------------------------------------ */
+    private DrawerLayout mainDrawerLayout;
+    private AppCompatImageView openMenuButton;
+    private Button main_navigation_btn_logout;
+    private Button main_navigation_btn_setting_pw;
+    private Button main_navigation_btn_setting_hint;
+    /*------------------------------------------Side Menu------------------------------------------ */
+
+
+    /*------------------------------------------Main------------------------------------------ */
     TextView textDiary;
     TextView textTodo;
     TextView title_recommended_music;
@@ -71,11 +79,14 @@ public class MainActivity extends AppCompatActivity {
     TextView txt_todo_category;
 
     boolean isChecked;
+    /*------------------------------------------Main------------------------------------------ */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_include_drawer);
+
+
 
         textDiary = findViewById(R.id.txt_mode_Diary); // text_mode_diary
         textTodo = findViewById(R.id.txt_mode_Todo); // text_mode_todo
@@ -102,8 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         isChecked = false;
 
-
-        /*---------------------------------------음악, 영화 추천 및 새로고침----------------------------------------------*/
+        /*-------------------------------------------Main------------------------------------------*/
         Object[][] musicList = {{R.drawable.main_img_music1,"Stay this way","fromis_9"},
                 {R.drawable.main_img_music2,"Ditto","NewJeans"},
                 {R.drawable.main_img_music3,"DM","fromis_9"},
@@ -211,8 +221,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         // 일자 선택 시 정의한 드로어블이 적용
-        calendar_todo.addDecorators(new DayDecorator(this));
-        calendar_diary.addDecorators(new DayDecorator_Diary(this));
+        calendar_todo.addDecorators(new MainActivity.DayDecorator(this));
+        calendar_diary.addDecorators(new MainActivity.DayDecorator_Diary(this));
 
 
         // 좌우 화살표 가운데의 연/월이 보이는 방식 커스텀
@@ -285,9 +295,47 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    }
+        /*-------------------------------------------Main------------------------------------------*/
 
-    /* 선택된 요일의 background를 설정하는 Decorator 클래스 (Calendar_Todo) */
+
+        /*------------------------------------------Side Menu------------------------------------------ */
+        mainDrawerLayout = findViewById(R.id.main_drawer_layout);
+        openMenuButton = findViewById(R.id.ic_menu);
+        main_navigation_btn_logout = findViewById(R.id.main_navigation_btn_logout);
+        main_navigation_btn_setting_pw = findViewById(R.id.main_navigation_btn_setting_pw);
+        main_navigation_btn_setting_hint = findViewById(R.id.main_navigation_btn_setting_hint);
+        openMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainDrawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        main_navigation_btn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 버튼1 클릭 시
+            }
+        });
+
+        main_navigation_btn_setting_pw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 버튼2 클릭 시
+            }
+        });
+
+        main_navigation_btn_setting_hint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 버튼3 클릭 시
+            }
+        });
+        /*------------------------------------------Side Menu------------------------------------------ */
+
+
+
+    }
     private static class DayDecorator implements DayViewDecorator {
         private final Drawable drawable;
 
@@ -396,4 +444,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
 }
+

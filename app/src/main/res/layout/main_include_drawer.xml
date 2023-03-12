@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_drawer_layout"
+    tools:openDrawer="start"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--fitsSystemWindows를 true로 지정할 경우
+    뷰가 차지할 수 있는 영역을 소프트키, 상태바를 제외한 영역까지 넓혀줍니다.-->
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/activity_main"/>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:orientation="vertical"
+        android:background="#ffffff"
+        android:layout_gravity = "left"
+        app:itemTextColor="#fff"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:orientation="vertical"
+                tools:ignore="MissingConstraints"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@color/main"
+                    android:padding="10dp"
+
+                    >
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/circle_iv"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        android:background="@android:color/transparent"
+                        app:civ_border_overlay="true"
+                        app:civ_border_width="1dp"
+                        app:civ_border_color="#ffffff"
+                        android:src="@drawable/ddaeng"
+                        />
+                    <TextView
+                        android:id="@+id/txt_side_menu_userId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="user1"
+                        android:textSize="24dp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="20dp"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    >
+
+                    <Button
+                        android:id="@+id/main_navigation_btn_logout"
+                        android:clickable="true"
+                        android:enabled="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:gravity="center|start"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_marginLeft="21dp"
+                        android:layout_marginTop="20dp"
+                        android:text="로그아웃"
+                        android:textSize="18sp"
+                        android:textColor="#777777"/>
+
+                    <Button
+                        android:id="@+id/main_navigation_btn_setting_pw"
+                        android:clickable="true"
+                        android:enabled="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:gravity="center|start"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_marginLeft="21dp"
+                        android:text="일기 비밀번호 설정"
+                        android:textSize="18sp"
+                        android:textColor="#777777"/>
+
+                    <Button
+                        android:id="@+id/main_navigation_btn_setting_hint"
+                        android:clickable="true"
+                        android:enabled="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:gravity="center|start"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_marginLeft="21dp"
+                        android:text="일기 비밀번호 힌트 설정"
+                        android:textSize="18sp"
+                        android:textColor="#777777"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>
