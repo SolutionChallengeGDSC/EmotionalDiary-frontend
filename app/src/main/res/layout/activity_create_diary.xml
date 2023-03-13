@@ -81,6 +81,7 @@
         app:layout_constraintTop_toBottomOf="@id/line" />
 
     <ImageButton
+        android:id="@+id/emotional_score_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
