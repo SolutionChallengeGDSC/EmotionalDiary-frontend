@@ -13,7 +13,6 @@ android {
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary=true
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -53,5 +52,7 @@ dependencies {
     implementation "androidx.drawerlayout:drawerlayout:1.1.1"
 
     implementation 'de.hdodenhof:circleimageview:3.1.0' // Circle ImageView
+    implementation 'com.google.firebase:firebase-core:20.0.0'
 
 }
+apply plugin: 'com.google.gms.google-services'
