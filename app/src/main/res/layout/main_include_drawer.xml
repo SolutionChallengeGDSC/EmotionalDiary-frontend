@@ -33,6 +33,7 @@
 
 
             <LinearLayout
+                android:id="@+id/layout_side_menu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -104,21 +105,6 @@
                         android:text="일기 비밀번호 설정"
                         android:textSize="18sp"
                         android:textColor="#777777"/>
-
-                    <Button
-                        android:id="@+id/main_navigation_btn_setting_hint"
-                        android:clickable="true"
-                        android:enabled="false"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="#ffffff"
-                        android:gravity="center|start"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_marginLeft="21dp"
-                        android:text="일기 비밀번호 힌트 설정"
-                        android:textSize="18sp"
-                        android:textColor="#777777"/>
-
 
                 </LinearLayout>
 

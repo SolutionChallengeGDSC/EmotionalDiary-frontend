@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -14,10 +15,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
@@ -26,6 +29,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
@@ -39,6 +43,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+// Todo : 일기 비밀번호 설정 dialog
 
 public class MainActivity extends AppCompatActivity {
     /*------------------------------------------Side Menu------------------------------------------ */
@@ -46,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatImageView openMenuButton;
     private Button main_navigation_btn_logout;
     private Button main_navigation_btn_setting_pw;
-    private Button main_navigation_btn_setting_hint;
     /*------------------------------------------Side Menu------------------------------------------ */
 
 
@@ -206,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         switchChangeMode.setOnCheckedChangeListener(new visibilitySwitchListener()); // mode switch button 활성
 
 
-        /* -------------------------------------CalendarView 속성------------------------------------- */
+        /* ------------------------------------- feature : CalendarView ------------------------------------- */
 
         calendar_todo.setTitleFormatter(new MonthArrayTitleFormatter(getResources().getTextArray(R.array.custom_months))); //
         calendar_todo.setWeekDayFormatter(new ArrayWeekDayFormatter(getResources().getTextArray(R.array.custom_weekdays))); // 요일
@@ -264,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
                 return calendarHeaderBuilder.toString();
             }
         });
-        /* -------------------------------------CalendarView 속성------------------------------------- */
+        /* ------------------------------------- attr : CalendarView ------------------------------------- */
 
 
 
@@ -283,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         todo_category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                custom_dialog(v);
+                addTodoDialog(v);
             }
         });
 
@@ -293,45 +297,38 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerAdapter.setmTodoList(mtodoItems);
 
 
-
-
         /*-------------------------------------------Main------------------------------------------*/
 
 
-        /*------------------------------------------Side Menu------------------------------------------ */
+        /*------------------------------------------ feature : Side Menu ------------------------------------------ */
         mainDrawerLayout = findViewById(R.id.main_drawer_layout);
+
         openMenuButton = findViewById(R.id.ic_menu);
-        main_navigation_btn_logout = findViewById(R.id.main_navigation_btn_logout);
-        main_navigation_btn_setting_pw = findViewById(R.id.main_navigation_btn_setting_pw);
-        main_navigation_btn_setting_hint = findViewById(R.id.main_navigation_btn_setting_hint);
+        main_navigation_btn_logout = mainDrawerLayout.findViewById(R.id.main_navigation_btn_logout);
+        main_navigation_btn_setting_pw = mainDrawerLayout.findViewById(R.id.main_navigation_btn_setting_pw);
         openMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mainDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
-
         main_navigation_btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 // 버튼1 클릭 시
             }
         });
 
         main_navigation_btn_setting_pw.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                // 버튼2 클릭 시
+            public void onClick(View v) {
+                changePasswordDialog(v);
+                Toast.makeText(MainActivity.this, "wwwwwwww", Toast.LENGTH_SHORT).show();
+                Log.i("","main_navigation_btn_setting_pw clicked");
             }
         });
 
-        main_navigation_btn_setting_hint.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // 버튼3 클릭 시
-            }
-        });
-        /*------------------------------------------Side Menu------------------------------------------ */
+        /*------------------------------------------ feature : Side Menu ------------------------------------------ */
 
 
 
@@ -377,8 +374,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-    public void custom_dialog(View v) {
+    // feature : Add Todo
+    public void addTodoDialog(View v) {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_todo, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -441,6 +438,59 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void changePasswordDialog(View v) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_diary_pw, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        builder.setView(dialogView);
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        TextView txt_password_hint = dialogView.findViewById(R.id.txt_password_hint);
+        AppCompatImageView btn_edit_password_hint = dialogView.findViewById(R.id.btn_edit_password_hint);
+        EditText et_password_hint = dialogView.findViewById(R.id.et_password_hint);
+        AppCompatImageView btn_edit_password_hint_complete = dialogView.findViewById(R.id.btn_edit_password_hint_complete);
+
+        TextView txt_password = dialogView.findViewById(R.id.txt_password);
+        AppCompatImageView btn_edit_password = dialogView.findViewById(R.id.btn_edit_password);
+        EditText et_password = dialogView.findViewById(R.id.et_password);
+        AppCompatImageView btn_edit_password_complete = dialogView.findViewById(R.id.btn_edit_password_complete);
+
+        Button cancelBtn_diary_pw = dialogView.findViewById(R.id.cancelBtn_diary_pw);
+        Button saveBtn_diary_pw = dialogView.findViewById(R.id.saveBtn_diary_pw);
+
+        btn_edit_password_hint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txt_password_hint.setVisibility(View.GONE);
+                btn_edit_password_hint.setVisibility(View.GONE);
+                et_password_hint.setVisibility(View.VISIBLE);
+                btn_edit_password_hint_complete.setVisibility(View.VISIBLE);
+                et_password_hint.setText(txt_password_hint.getText().toString());
+            }
+        });
+        btn_edit_password_hint_complete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txt_password_hint.setVisibility(View.VISIBLE);
+                btn_edit_password_hint.setVisibility(View.VISIBLE);
+                et_password_hint.setVisibility(View.GONE);
+                btn_edit_password_hint_complete.setVisibility(View.GONE);
+                txt_password_hint.setText(et_password_hint.getText().toString());
+            }
+        });
+
+
+
+
+
+
+
+
+    }
+
 
 
 

@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView txt_login;
     AppCompatImageButton btn_google;
     boolean isLogin;
-
+    ImageView logo_login;
 
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
@@ -47,11 +48,16 @@ public class LoginActivity extends AppCompatActivity {
 
         isLogin = false;
         txt_login = findViewById(R.id.txt_login);
+        logo_login = findViewById(R.id.logo_login);
         btn_google = findViewById(R.id.btn_google);
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
 
 
-        mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient.signOut(); // 로그인 초기화
 
 
         txt_login.setTypeface(txt_login.getTypeface(), Typeface.ITALIC);
@@ -66,21 +72,19 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-
     private void updateUI(GoogleSignInAccount account) {
         if (account != null) {
             // 사용자가 로그인한 경우
             String idToken = account.getIdToken(); // 로그인 토큰을 가져옵니다.
             String name = account.getGivenName();
-            String ac = account.getServerAuthCode();
+            String authToken = account.getServerAuthCode(); //
+
             // TODO: 이제이 토큰을 사용하여 서버에서 사용자를 인증하십시오.
             Toast.makeText(this, "idToken : " + idToken, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "authToken : " + authToken, Toast.LENGTH_SHORT).show();
             Toast.makeText(this, "name : " + name, Toast.LENGTH_SHORT).show();
 
         } else {
-            // 사용자가 로그인하지 않은 경우
-            // TODO: 사용자에게 다시 로그인하도록 요청하십시오.
         }
     }
 
@@ -99,6 +103,9 @@ public class LoginActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             Toast.makeText(this, "handleSignInResult success ", Toast.LENGTH_SHORT).show();
+            Uri ur = account.getPhotoUrl();
+            logo_login.setImageURI(ur);
+            Toast.makeText(this,"photoUrl : "+ ur.toString(), Toast.LENGTH_SHORT).show();
 
             // Signed in successfully, show authenticated UI.
             updateUI(account);
