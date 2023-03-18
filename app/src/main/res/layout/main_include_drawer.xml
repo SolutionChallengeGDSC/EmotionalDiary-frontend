@@ -49,7 +49,7 @@
 
                     >
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/circle_iv"
+                        android:id="@+id/img_side_menu_userImg"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_gravity="center"

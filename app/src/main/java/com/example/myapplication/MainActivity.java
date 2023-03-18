@@ -38,24 +38,30 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter;
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter;
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
+import com.squareup.picasso.Picasso;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 // Todo : 일기 비밀번호 설정 dialog
 
 public class MainActivity extends AppCompatActivity {
-    /*------------------------------------------Side Menu------------------------------------------ */
+    /*------------------------------------------Side Menu, User Info------------------------------------------ */
     private DrawerLayout mainDrawerLayout;
     private AppCompatImageView openMenuButton;
     TextView main_navigation_txt_logout;
     TextView main_navigation_txt_setting_pw;
     String diaryPw="password"; // 일기 비밀번호
-    String diaryPwHint="passwordhint";
-    /*------------------------------------------Side Menu------------------------------------------ */
+    String diaryPwHint="passwordhint"; // 일기 비밀번호 힌트
+    CircleImageView img_side_menu_userImg;
+    TextView txt_side_menu_userId;
+    Uri userProfileImg;
 
+    /*------------------------------------------Side Menu, User Info------------------------------------------ */
 
     /*------------------------------------------Main------------------------------------------ */
     TextView textDiary;
@@ -119,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
         refresh_recommended_movie = findViewById(R.id.refresh_recommended_movie); // recommended_movie refresh Button
 
         isChecked = false;
+
+
+
 
         /*-------------------------------------------Main------------------------------------------*/
         Object[][] musicList = {{R.drawable.main_img_music1,"Stay this way","fromis_9"},
@@ -304,12 +313,23 @@ public class MainActivity extends AppCompatActivity {
 
 
         /*------------------------------------------ feature : Side Menu ------------------------------------------ */
+
+        Intent signInIntent = getIntent();
+
+        userProfileImg = signInIntent.getParcelableExtra("profileImg");
+
+
         mainDrawerLayout = findViewById(R.id.main_drawer_layout);
         openMenuButton = findViewById(R.id.ic_menu);
 
         main_navigation_txt_logout = findViewById(R.id.main_navigation_txt_logout);
-
+        img_side_menu_userImg = findViewById(R.id.img_side_menu_userImg);
+        txt_side_menu_userId = findViewById(R.id.txt_side_menu_userId);
         main_navigation_txt_setting_pw = findViewById(R.id.main_navigation_txt_setting_pw);
+
+        txt_side_menu_userId.setText(signInIntent.getStringExtra("name"));
+        Picasso.get().load(userProfileImg).into(img_side_menu_userImg);
+
         main_navigation_txt_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -513,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
                 for(int i = 0; i < diaryPw.length(); i++){
                     tempPassword += "*";
                 }
-                txt_password.setText(tempPassword); // todo
+                txt_password.setText(tempPassword);
             }
         });
 

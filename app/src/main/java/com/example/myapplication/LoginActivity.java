@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
+import com.squareup.picasso.Picasso;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -75,16 +76,22 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(GoogleSignInAccount account) {
         if (account != null) {
             // 사용자가 로그인한 경우
-            String idToken = account.getIdToken(); // 로그인 토큰을 가져옵니다.
-            String name = account.getGivenName();
-            String authToken = account.getServerAuthCode(); //
-
-            // TODO: 이제이 토큰을 사용하여 서버에서 사용자를 인증하십시오.
+            String idToken = account.getIdToken(); // 로그인 토큰
+            String nameToken = account.getGivenName();
+            String authToken = account.getServerAuthCode();
+            Uri photoUri = account.getPhotoUrl();
+            Picasso.get().load(photoUri).into(logo_login);
+            // Tokens
             Toast.makeText(this, "idToken : " + idToken, Toast.LENGTH_SHORT).show();
             Toast.makeText(this, "authToken : " + authToken, Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "name : " + name, Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(this, "name : " + nameToken, Toast.LENGTH_SHORT).show();
+            Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
+            signInIntent.putExtra("name", nameToken);
+            signInIntent.putExtra("profileImg",photoUri);
+            startActivity(signInIntent);
+            finish();
         } else {
+
         }
     }
 
@@ -106,12 +113,8 @@ public class LoginActivity extends AppCompatActivity {
             Uri ur = account.getPhotoUrl();
             logo_login.setImageURI(ur);
             Toast.makeText(this,"photoUrl : "+ ur.toString(), Toast.LENGTH_SHORT).show();
-
-            // Signed in successfully, show authenticated UI.
             updateUI(account);
         } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Toast.makeText(this, "handleSignInResult fail " + "signInResult:failed code=" + e.getMessage(), Toast.LENGTH_SHORT).show();
             updateUI(null);
         }
