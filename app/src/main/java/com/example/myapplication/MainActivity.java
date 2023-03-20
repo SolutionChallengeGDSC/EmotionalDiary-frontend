@@ -6,8 +6,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     boolean isChecked;
     /*------------------------------------------Main------------------------------------------ */
 
+    /*------------------------------------------ onCreate ------------------------------------------ */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -314,9 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*------------------------------------------ feature : Side Menu ------------------------------------------ */
 
-        Intent signInIntent = getIntent();
-
-        userProfileImg = signInIntent.getParcelableExtra("profileImg");
+        Intent logInIntent = getIntent();
 
 
         mainDrawerLayout = findViewById(R.id.main_drawer_layout);
@@ -327,13 +328,18 @@ public class MainActivity extends AppCompatActivity {
         txt_side_menu_userId = findViewById(R.id.txt_side_menu_userId);
         main_navigation_txt_setting_pw = findViewById(R.id.main_navigation_txt_setting_pw);
 
-        txt_side_menu_userId.setText(signInIntent.getStringExtra("name"));
-        Picasso.get().load(userProfileImg).into(img_side_menu_userImg);
+        userProfileImg = logInIntent.getParcelableExtra("profileImg");
+        String userProfileName = logInIntent.getStringExtra("name");
+
+        if(!TextUtils.isEmpty(userProfileName)){
+            txt_side_menu_userId.setText(userProfileName);
+            Picasso.get().load(userProfileImg).into(img_side_menu_userImg);
+        }
 
         main_navigation_txt_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "로그아웃", Toast.LENGTH_SHORT).show();
+                logOutDialog(v);
             }
         });
         main_navigation_txt_setting_pw.setOnClickListener(new View.OnClickListener() {
@@ -348,11 +354,36 @@ public class MainActivity extends AppCompatActivity {
                 mainDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
+
         /*------------------------------------------ feature : Side Menu ------------------------------------------ */
-
-
-
     }
+    /*------------------------------------------ onCreate ------------------------------------------ */
+
+    /*------------------------------------------ feature : Back Button ------------------------------------------ */
+    private final long finishtimeed = 1000;
+    private long presstime = 0;
+
+    @Override
+    public void onBackPressed() {
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - presstime;
+        if(mainDrawerLayout.isDrawerOpen(GravityCompat.START)){
+            mainDrawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else{
+            if (0 <= intervalTime && finishtimeed >= intervalTime)
+            {
+                finish();
+            }
+            else
+            {
+                presstime = tempTime;
+                Toast.makeText(getApplicationContext(), "한번 더 누르시면 앱이 종료됩니다", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    /*------------------------------------------ feature : Back Button ------------------------------------------ */
+
     private static class DayDecorator implements DayViewDecorator {
         private final Drawable drawable;
 
@@ -434,7 +465,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         Button ok_btn = dialogView.findViewById(R.id.saveBtn); // ok button
         ok_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -460,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
     }
     /* ------------------------------------- feature : Add_Todo_dialog ------------------------------------- */
 
-    /* ------------------------------------- feature : change Password  ------------------------------------- */
+    /* ------------------------------------- feature : change password  ------------------------------------- */
     public void changePasswordDialog(View v) {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_diary_pw, null);
 
@@ -554,16 +584,45 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.dismiss();
             }
         });
-        /* ------------------------------------- feature : change Password  ------------------------------------- */
-
-
-
 
     }
+    /* ------------------------------------- feature : change password  ------------------------------------- */
 
 
+    /* ------------------------------------- feature : log out  ------------------------------------- */
+
+    public void logOutDialog(View v) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_logout, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        builder.setView(dialogView);
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        Button cancelBtn_logout = dialogView.findViewById(R.id.cancelBtn_logout);
+        Button saveBtn_logout = dialogView.findViewById(R.id.saveBtn_logout);
 
 
+        cancelBtn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        saveBtn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent logOutIntent = new Intent(MainActivity.this, LoginActivity.class);
+                alertDialog.dismiss();
+                startActivity(logOutIntent);
+                finish();
+            }
+        });
+
+    }
+    /* ------------------------------------- feature : log out  ------------------------------------- */
 
 }
 

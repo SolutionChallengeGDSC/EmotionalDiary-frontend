@@ -19,13 +19,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="일기 비밀번호"
+            android:text="일기 비밀번호 설정"
+            android:textSize="16dp"
             android:textColor="@color/black"
             android:layout_gravity="center"
             />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"

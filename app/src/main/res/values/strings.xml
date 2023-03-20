@@ -26,7 +26,8 @@
         <item>12월</item>
     </string-array>
 
-    <string name="server_client_id">179283528736-uvjb8nn4061dhfldgs29c1kp2agcc1sb.apps.googleusercontent.com</string>
+    <string name="server_client_id">334615020809-vpecsb6vc0370td3s7d6v0u1r8nvpt42.apps.googleusercontent.com</string>
+
     <string name="open">open</string>
     <string name="closed">closed</string>
 </resources>

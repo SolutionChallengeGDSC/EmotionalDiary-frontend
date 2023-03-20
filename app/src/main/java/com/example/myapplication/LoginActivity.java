@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
+
 import com.squareup.picasso.Picasso;
 
 
@@ -29,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 // Todo : Google Login access token 처리 + 일기 비밀번호 설정 dialog + profile img -> google 계정 사진 + 무한스크롤 ..
 
 public class LoginActivity extends AppCompatActivity {
@@ -39,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
+    String myJSON;
 
 
     public static int RC_SIGN_IN = 1000; // 임의의 값
@@ -58,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         mGoogleSignInClient.signOut(); // 로그인 초기화
 
 
@@ -82,9 +86,9 @@ public class LoginActivity extends AppCompatActivity {
             Uri photoUri = account.getPhotoUrl();
             Picasso.get().load(photoUri).into(logo_login);
             // Tokens
-            Toast.makeText(this, "idToken : " + idToken, Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "authToken : " + authToken, Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "name : " + nameToken, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "idToken : " + idToken, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "authToken : " + authToken, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "name : " + nameToken, Toast.LENGTH_SHORT).show();
             Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
             signInIntent.putExtra("name", nameToken);
             signInIntent.putExtra("profileImg",photoUri);
@@ -102,22 +106,20 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RC_SIGN_IN){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            Toast.makeText(this, "onActivityResult success ", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "onActivityResult success ", Toast.LENGTH_SHORT).show();
             handleSignInResult(task);
         }
     }
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Toast.makeText(this, "handleSignInResult success ", Toast.LENGTH_SHORT).show();
-            Uri ur = account.getPhotoUrl();
-            logo_login.setImageURI(ur);
-            Toast.makeText(this,"photoUrl : "+ ur.toString(), Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "handleSignInResult success ", Toast.LENGTH_SHORT).show();
+            String idToken = account.getIdToken();
+
             updateUI(account);
         } catch (ApiException e) {
-            Toast.makeText(this, "handleSignInResult fail " + "signInResult:failed code=" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "handleSignInResult fail " + "signInResult:failed code=" + e.getMessage(), Toast.LENGTH_SHORT).show();
             updateUI(null);
         }
     }
-
 }
