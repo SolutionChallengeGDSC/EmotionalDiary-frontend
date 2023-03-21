@@ -7,10 +7,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 public class CreateDiaryActivity extends AppCompatActivity {
     private EditText title, content;
     private ImageButton close_btn, emotional_score_btn, lock;
+    private AppCompatButton complete_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,15 @@ public class CreateDiaryActivity extends AppCompatActivity {
         // 닫기 버튼
         close_btn = findViewById(R.id.close_btn);
         close_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        // 완료 버튼
+        complete_btn = findViewById(R.id.complete_btn);
+        complete_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
