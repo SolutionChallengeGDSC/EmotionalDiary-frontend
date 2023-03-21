@@ -8,7 +8,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class CreateDiaryActivity extends AppCompatActivity {
-    private ImageButton emotional_score_btn;
+    private ImageButton emotional_score_btn, lock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +23,20 @@ public class CreateDiaryActivity extends AppCompatActivity {
                 EmotionalScoreDialog emotionalScoreDialog = new EmotionalScoreDialog();
                 emotionalScoreDialog.show(getSupportFragmentManager(), "emotional score");
 
+            }
+        });
+
+        // 잠금 아이콘
+        lock = findViewById(R.id.lock);
+        lock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(lock.isSelected()) {
+                    lock.setSelected(false);
+                }
+                else {
+                    lock.setSelected(true);
+                }
             }
         });
 
