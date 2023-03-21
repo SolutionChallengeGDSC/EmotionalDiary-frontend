@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class CreateDiaryActivity extends AppCompatActivity {
@@ -39,9 +38,5 @@ public class CreateDiaryActivity extends AppCompatActivity {
                 }
             }
         });
-
-        // 액션바 제거
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
     }
 }
