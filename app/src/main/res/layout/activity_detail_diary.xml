@@ -4,36 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@color/white"
-        android:src="@drawable/ic_btn_close"
-        app:layout_constraintBottom_toBottomOf="@id/datetime"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/datetime" />
-
-    <TextView
-        android:id="@+id/datetime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="02/17 20:31"
-        android:textColor="@color/dark_gray"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/ic_btn_menu"
-        app:layout_constraintBottom_toBottomOf="@id/datetime"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/datetime" />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <TextView
         android:id="@+id/public_or_private"
@@ -45,7 +18,7 @@
         android:textColor="@color/dark_gray"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/datetime" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <View
         android:layout_width="match_parent"
