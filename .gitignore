@@ -13,6 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+<<<<<<< HEAD
 
 ### Android ###
 # Gradle files
@@ -278,3 +279,5 @@ fabric.properties
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
+=======
+>>>>>>> feature/main_view
