@@ -1,18 +1,28 @@
 package com.GDSC.emotionaldiary;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class CreateDiaryActivity extends AppCompatActivity {
+    private EditText title, content;
     private ImageButton emotional_score_btn, lock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_diary);
+
+        // 수정
+        Intent intent = getIntent();
+        title = findViewById(R.id.title);
+        title.setText(intent.getStringExtra("title"));
+        content = findViewById(R.id.content);
+        content.setText(intent.getStringExtra("content"));
 
         // 감정 점수 다이얼로그 띄우기
         emotional_score_btn = findViewById(R.id.emotional_score_btn);
