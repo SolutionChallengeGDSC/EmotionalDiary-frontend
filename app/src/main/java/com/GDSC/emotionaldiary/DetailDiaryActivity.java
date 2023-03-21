@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class DetailDiaryActivity extends AppCompatActivity {
-    private TextView title;
+    private TextView title, content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +33,13 @@ public class DetailDiaryActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         title = findViewById(R.id.title);
+        content = findViewById(R.id.content);
         switch (item.getItemId()) {
             case R.id.modify:
-//                Intent intent = new Intent(getApplicationContext(), CreateDiaryActivity.class);
-//                intent.putExtra("title", title.getText()+"");
-//                startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), CreateDiaryActivity.class);
+                intent.putExtra("title", title.getText());
+                intent.putExtra("content", content.getText());
+                startActivity(intent);
                 return true;
             case R.id.delete:
                 return true;
