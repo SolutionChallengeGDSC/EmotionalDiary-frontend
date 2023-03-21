@@ -4,48 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@color/white"
-        android:src="@drawable/ic_btn_close"
-        app:layout_constraintBottom_toBottomOf="@id/description"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/description" />
-
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="일기쓰기"
-        android:textColor="@color/dark_gray"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="40dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/btn_round_square_maincolor"
-        android:backgroundTint="@color/main"
-        android:text="완료"
-        android:textColor="@color/dark_gray"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@id/description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/description" />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_create_diary" />
 
     <EditText
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="20dp"
         android:background="@null"
         android:hint="제목"
@@ -53,7 +21,7 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <View
         android:id="@+id/line"
@@ -95,8 +63,8 @@
         android:id="@+id/lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
         android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
         android:background="@color/white"
         android:src="@drawable/selector_lock"
         app:layout_constraintBottom_toBottomOf="parent"
