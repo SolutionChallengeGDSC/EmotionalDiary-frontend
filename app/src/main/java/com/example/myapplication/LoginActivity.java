@@ -1,15 +1,10 @@
 package com.example.myapplication;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 
 import com.squareup.picasso.Picasso;
@@ -18,17 +13,18 @@ import com.squareup.picasso.Picasso;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 
-import android.accounts.AccountManager;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 // Todo : Google Login access token 처리 + 일기 비밀번호 설정 dialog + profile img -> google 계정 사진 + 무한스크롤 ..
@@ -41,8 +37,10 @@ public class LoginActivity extends AppCompatActivity {
 
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
-    String myJSON;
 
+    private static final String TAG = "TestActivity";
+    String nameToken;
+    String emailToken;
 
     public static int RC_SIGN_IN = 1000; // 임의의 값
 
@@ -58,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
 
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -80,15 +79,28 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(GoogleSignInAccount account) {
         if (account != null) {
             // 사용자가 로그인한 경우
-            String idToken = account.getIdToken(); // 로그인 토큰
-            String nameToken = account.getGivenName();
-            String authToken = account.getServerAuthCode();
+            nameToken = account.getGivenName();
+            emailToken = account.getEmail();
             Uri photoUri = account.getPhotoUrl();
             Picasso.get().load(photoUri).into(logo_login);
-            // Tokens
-//            Toast.makeText(this, "idToken : " + idToken, Toast.LENGTH_SHORT).show();
-//            Toast.makeText(this, "authToken : " + authToken, Toast.LENGTH_SHORT).show();
-//            Toast.makeText(this, "name : " + nameToken, Toast.LENGTH_SHORT).show();
+            String url = "http://10.0.2.2:8080/user/sign-up";
+            AtomicReference<String> responseUserInfo = new AtomicReference<>("");
+
+            new Thread(() ->{
+                try{
+                    HttpPost userInfo = new HttpPost();
+                    String json = "{\"email\":\"" + emailToken + "\",\"nickname\":\""+nameToken + "\"}";
+                    String response = userInfo.post(url,json);
+                    System.out.println("json : "+ json);
+                    responseUserInfo.set(response);
+                    System.out.println(response);
+                }catch (IOException e){
+                    Log.e("IOException : ", e.getMessage());
+                }
+
+            }).start();
+
+            Log.e("responseUserInfo",responseUserInfo.toString());
             Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
             signInIntent.putExtra("name", nameToken);
             signInIntent.putExtra("profileImg",photoUri);
@@ -106,20 +118,20 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RC_SIGN_IN){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            // Toast.makeText(this, "onActivityResult success ", Toast.LENGTH_SHORT).show();
             handleSignInResult(task);
         }
     }
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            // Toast.makeText(this, "handleSignInResult success ", Toast.LENGTH_SHORT).show();
-            String idToken = account.getIdToken();
 
             updateUI(account);
         } catch (ApiException e) {
-            // Toast.makeText(this, "handleSignInResult fail " + "signInResult:failed code=" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "handleSignInResult fail " + "signInResult:failed code=" + e.getMessage(), Toast.LENGTH_SHORT).show();
             updateUI(null);
         }
     }
+
+
+
 }
