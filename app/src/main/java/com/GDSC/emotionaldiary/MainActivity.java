@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     CircleImageView img_side_menu_userImg;
     TextView txt_side_menu_userId;
     Uri userProfileImg;
+    int userId = 0; // 임시 값, 추후 수정
 
     /*------------------------------------------Side Menu, User Info------------------------------------------ */
 
@@ -99,8 +100,6 @@ public class MainActivity extends AppCompatActivity {
     boolean isChecked;
     /*------------------------------------------Main------------------------------------------ */
 
-    /*------------------------------------------User Info------------------------------------------*/
-    int userId = 2;
 
     /*------------------------------------------ onCreate ------------------------------------------ */
     @Override
@@ -336,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
 
         userProfileImg = logInIntent.getParcelableExtra("profileImg");
         String userProfileName = logInIntent.getStringExtra("name");
+        userId = logInIntent.getIntExtra("userId",0);
 
         if(!TextUtils.isEmpty(userProfileName)){
             txt_side_menu_userId.setText(userProfileName);

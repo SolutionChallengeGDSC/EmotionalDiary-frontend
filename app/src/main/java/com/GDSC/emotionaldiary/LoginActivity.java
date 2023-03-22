@@ -85,54 +85,79 @@ public class LoginActivity extends AppCompatActivity {
             Uri photoUri = account.getPhotoUrl();
             Picasso.get().load(photoUri).into(logo_login);
             String url = "http://34.64.254.35/user/sign-up";
-            AtomicReference<String> responseUserInfo = new AtomicReference<>("");
+            String urlGetUserid = "http://34.64.254.35/user?email=" + emailToken; // get UserId
 
             new Thread(() ->{
+                int userId = 0;
                 try{
-                    HttpPost userInfo = new HttpPost();
-                    HttpPost userIngo_getID = new HttpPost(); // Todo : id 값 받아오기
-                    JSONObject jsonObject = new JSONObject(); // post json
-                    jsonObject.put("email",emailToken);
-                    jsonObject.put("nickname", nameToken);
-                    jsonObject.put("picture", photoUri);
-
-
-                    String response = userInfo.post(url,jsonObject.toString());
-                    System.out.println("json : "+ jsonObject);
-                    Log.e("json_posted", jsonObject.toString());
-
-                    responseUserInfo.set(response);
-                    System.out.println(response);
-                    Log.e("response", response);
-
-                    JSONObject jObject = new JSONObject(responseUserInfo.toString());;
-
-                    int status = jObject.getInt("status");
-
-
-                    if(status == 200){ // 새로운 유저 DB 생성
-                        Log.e("status", Integer.toString(status));
-
-                        JSONObject result = jObject.getJSONObject("result");
-                        int userId = result.getInt("id"); // user id
-
-                        Log.e("userId", Integer.toString(userId));
-
-                        Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
-                        signInIntent.putExtra("name", nameToken);
-                        signInIntent.putExtra("profileImg",photoUri);
-                        startActivity(signInIntent);
-                        finish();
+                    HttpGet getUserId = new HttpGet();
+                    String responsGetUserId = getUserId.get(urlGetUserid);
+                    JSONObject jsonGetUserId = new JSONObject(responsGetUserId); // get json
+                    Log.e("jsonGetUserId",jsonGetUserId.toString());
+                    int statusGetUserId = jsonGetUserId.getInt("status");
+                    if(statusGetUserId == 200){ // 존재하는 유저
+                        Log.e("status", Integer.toString(statusGetUserId));
+                        JSONObject resultGetUserId = jsonGetUserId.getJSONObject("result");
+                        userId = resultGetUserId.getInt("id");
                     }
-                    else if(status == 403){
-                        // 같은 이메일의 유저 존재
-                        Log.e("status", Integer.toString(status));
-                        Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
-                        signInIntent.putExtra("name", nameToken);
-                        signInIntent.putExtra("profileImg",photoUri);
-                        startActivity(signInIntent);
-                        finish();
-                    }
+//                    else if(statusGetUserId == 403){ // 존재하지 않는 유저 -> sign up
+//
+//                        HttpPost userInfo = new HttpPost();
+//                        JSONObject jsonPostSignUp = new JSONObject(); // post json
+//
+//                        jsonPostSignUp.put("email",emailToken);
+//                        jsonPostSignUp.put("nickname", nameToken);
+//                        jsonPostSignUp.put("picture", photoUri);
+//                        String responsePostSignUp = userInfo.post(url,jsonPostSignUp.toString());
+//                        System.out.println("json : "+ jsonPostSignUp);
+//                        Log.e("json_posted", jsonPostSignUp.toString());
+//
+//                        System.out.println(responsePostSignUp);
+//                        Log.e("responsePostSignUp", responsePostSignUp);
+//
+//                        JSONObject jObject = new JSONObject(responsePostSignUp.toString());;
+//                        int statusPost = jObject.getInt("status");
+//                        if(statusPost == 200){ // 새로운 유저 DB 생성
+//                            Log.e("status", Integer.toString(statusPost));
+//                            JSONObject resultPostSignUp = jObject.getJSONObject("result");
+//                            userId = resultPostSignUp.getInt("id"); // user id
+//                        }
+//                    }
+                    Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    signInIntent.putExtra("userId",userId);
+                    signInIntent.putExtra("name", nameToken);
+                    signInIntent.putExtra("profileImg",photoUri);
+                    startActivity(signInIntent);
+                    finish();
+
+
+
+
+
+//
+//                    if(status == 200){ // 새로운 유저 DB 생성
+//                        Log.e("status", Integer.toString(status));
+//
+//                        JSONObject result = jObject.getJSONObject("result");
+//                        int userId = result.getInt("id"); // user id
+//
+//                        Log.e("userId", Integer.toString(userId));
+//
+//                        Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
+//                        signInIntent.putExtra("name", nameToken);
+//                        signInIntent.putExtra("profileImg",photoUri);
+//                        startActivity(signInIntent);
+//                        finish();
+//                    }
+//                    else if(status == 403){
+//                        // 같은 이메일의 유저 존재
+//                        Log.e("status", Integer.toString(status));
+//                        Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
+//                        signInIntent.putExtra("name", nameToken);
+//                        signInIntent.putExtra("profileImg",photoUri);
+//                        startActivity(signInIntent);
+//                        finish();
+//                    }
                 }catch (IOException e){
                     Log.e("IOException : ", e.getMessage());
                 }catch (JSONException e) {
