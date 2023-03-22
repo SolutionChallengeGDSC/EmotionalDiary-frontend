@@ -23,6 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -81,29 +84,63 @@ public class LoginActivity extends AppCompatActivity {
             emailToken = account.getEmail();
             Uri photoUri = account.getPhotoUrl();
             Picasso.get().load(photoUri).into(logo_login);
-            String url = "http://10.0.2.2:8080/user/sign-up";
+            String url = "http://34.64.254.35/user/sign-up";
             AtomicReference<String> responseUserInfo = new AtomicReference<>("");
 
             new Thread(() ->{
                 try{
                     HttpPost userInfo = new HttpPost();
-                    String json = "{\"email\":\"" + emailToken + "\",\"nickname\":\""+nameToken + "\"}";
-                    String response = userInfo.post(url,json);
-                    System.out.println("json : "+ json);
+                    HttpPost userIngo_getID = new HttpPost(); // Todo : id 값 받아오기
+                    JSONObject jsonObject = new JSONObject(); // post json
+                    jsonObject.put("email",emailToken);
+                    jsonObject.put("nickname", nameToken);
+                    jsonObject.put("picture", photoUri);
+
+
+                    String response = userInfo.post(url,jsonObject.toString());
+                    System.out.println("json : "+ jsonObject);
+                    Log.e("json_posted", jsonObject.toString());
+
                     responseUserInfo.set(response);
                     System.out.println(response);
+                    Log.e("response", response);
+
+                    JSONObject jObject = new JSONObject(responseUserInfo.toString());;
+
+                    int status = jObject.getInt("status");
+
+
+                    if(status == 200){ // 새로운 유저 DB 생성
+                        Log.e("status", Integer.toString(status));
+
+                        JSONObject result = jObject.getJSONObject("result");
+                        int userId = result.getInt("id"); // user id
+
+                        Log.e("userId", Integer.toString(userId));
+
+                        Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        signInIntent.putExtra("name", nameToken);
+                        signInIntent.putExtra("profileImg",photoUri);
+                        startActivity(signInIntent);
+                        finish();
+                    }
+                    else if(status == 403){
+                        // 같은 이메일의 유저 존재
+                        Log.e("status", Integer.toString(status));
+                        Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        signInIntent.putExtra("name", nameToken);
+                        signInIntent.putExtra("profileImg",photoUri);
+                        startActivity(signInIntent);
+                        finish();
+                    }
                 }catch (IOException e){
                     Log.e("IOException : ", e.getMessage());
+                }catch (JSONException e) {
+                    Log.e("RuntimeException :", e.getMessage());
+                    throw new RuntimeException(e);
                 }
-
             }).start();
 
-            Log.e("responseUserInfo",responseUserInfo.toString());
-            Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
-            signInIntent.putExtra("name", nameToken);
-            signInIntent.putExtra("profileImg",photoUri);
-            startActivity(signInIntent);
-            finish();
         } else {
 
         }

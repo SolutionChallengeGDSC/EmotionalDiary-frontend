@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -40,6 +41,10 @@ import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormat
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -93,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
 
     boolean isChecked;
     /*------------------------------------------Main------------------------------------------ */
+
+    /*------------------------------------------User Info------------------------------------------*/
+    int userId = 2;
 
     /*------------------------------------------ onCreate ------------------------------------------ */
     @Override
@@ -304,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        for(int i = 1; i < 5; i++){
+        for(int i = 1; i <= 5; i++){
             mtodoItems.add(new TodoItem_Item("gun" + i));
         }
         mRecyclerAdapter.setmTodoList(mtodoItems);
@@ -488,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
     }
     /* ------------------------------------- feature : Add_Todo_dialog ------------------------------------- */
 
-    /* ------------------------------------- feature : change password  ------------------------------------- */
+    /* ------------------------------------- feature : change_password_dailog  ------------------------------------- */
     public void changePasswordDialog(View v) {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_diary_pw, null);
 
@@ -572,7 +580,44 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "비밀번호나 힌트를 정확히 입력해주세요", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    alertDialog.dismiss();
+                    new Thread(()->{
+
+                        try{
+                            String urlSetPw = "http://34.64.254.35/user/" + userId + "/pass-hint";
+                            // request setPw
+                            HttpPost postSetPw = new HttpPost();
+                            JSONObject jsonSetPw = new JSONObject();
+                            jsonSetPw.put("password",diaryPw);
+                            jsonSetPw.put("hint",diaryPwHint);
+
+                            // response setPw
+                            String responseSetPw = postSetPw.post(urlSetPw,jsonSetPw.toString());
+                            JSONObject jsonResponse = new JSONObject(responseSetPw);
+                            int status = jsonResponse.getInt("status");
+                            Log.e("JSONObject",jsonSetPw.toString());
+                            Log.e("jsonResponse",jsonResponse.toString());
+                            Log.e("jsonResponse",jsonResponse.toString());
+                            if(status == 200 ){
+                                alertDialog.dismiss();
+                            }
+                            else{
+                                Toast.makeText(MainActivity.this, "재시도", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }catch (JSONException e) {
+                            Log.e("RuntimeException :", e.getMessage());
+                            throw new RuntimeException(e);
+                        }catch (IOException e){
+                            Log.e("IOException : ", e.getMessage());
+                        }
+
+
+                    }).start();
+
+
+
+
+
                 }
             }
         });
@@ -584,10 +629,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    /* ------------------------------------- feature : change password  ------------------------------------- */
+    /* ------------------------------------- feature : change_password_dailog ------------------------------------- */
 
 
-    /* ------------------------------------- feature : log out  ------------------------------------- */
+    /* ------------------------------------- feature : log_out_dialog  ------------------------------------- */
 
     public void logOutDialog(View v) {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_logout, null);
@@ -619,7 +664,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    /* ------------------------------------- feature : log out  ------------------------------------- */
+    /* ------------------------------------- feature : log_out_dialog  ------------------------------------- */
 
 }
 

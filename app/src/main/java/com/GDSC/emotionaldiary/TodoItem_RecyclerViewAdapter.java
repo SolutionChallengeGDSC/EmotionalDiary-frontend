@@ -1,5 +1,7 @@
 package com.GDSC.emotionaldiary;
 
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,13 +50,12 @@ public class TodoItem_RecyclerViewAdapter extends RecyclerView.Adapter<TodoItem_
         AppCompatImageView btn_edit_todo;
         AppCompatImageView btn_remove_todo;
         AppCompatImageView btn_edit_complete;
-        boolean isChecked;
         TodoItem_Item item;
+        boolean isChecked;
 
         public ViewHolder(@NonNull View itemView){
             super(itemView);
 
-            isChecked = false;
             txt_content = (TextView) itemView.findViewById(R.id.txt_content);
             btn_check_todo = (AppCompatImageView) itemView.findViewById(R.id.btn_check_todo);
             btn_edit_todo = (AppCompatImageView) itemView.findViewById(R.id.btn_edit_todo);
@@ -66,6 +67,13 @@ public class TodoItem_RecyclerViewAdapter extends RecyclerView.Adapter<TodoItem_
         void onBind(TodoItem_Item item) {
             this.item = item;
             txt_content.setText(item.getTxt_content());
+            isChecked = item.isCheked();
+            if(item.isCheked()){
+                btn_check_todo.setImageResource(R.drawable.ic_check_todo);
+            }
+            else {
+                btn_check_todo.setImageResource(R.drawable.ic_check_not_todo);
+            }
 
             btn_check_todo.setOnClickListener(this);
             txt_content.setOnClickListener(this);
@@ -81,12 +89,16 @@ public class TodoItem_RecyclerViewAdapter extends RecyclerView.Adapter<TodoItem_
             int position = getAdapterPosition();
             switch (v.getId()){
                 case R.id.btn_check_todo:
-                    v.setActivated(!v.isActivated());
-                    isChecked = isChecked == false ? true : false;
-                    Toast.makeText(v.getContext(), "btn_check_todo",Toast.LENGTH_SHORT).show();
+                    item.setCheked(isChecked = isChecked == false ? true : false);
+                    if(item.isCheked()){
+                        btn_check_todo.setImageResource(R.drawable.ic_check_todo);
+                    }
+                    else {
+                        btn_check_todo.setImageResource(R.drawable.ic_check_not_todo);
+                    }
                     break;
                 case R.id.txt_content:
-                    Toast.makeText(v.getContext(), "txt_content",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), txt_content.getText().toString(),Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.btn_edit_todo: // todo_Edit 버튼
                     txt_content.setVisibility(View.GONE);
