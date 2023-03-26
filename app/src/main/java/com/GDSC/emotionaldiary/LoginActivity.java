@@ -27,8 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
-
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -90,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
             new Thread(() ->{
                 int userId = 0;
                 try{
-                    HttpGet getUserId = new HttpGet();
+                    HttpClient getUserId = new HttpClient();
                     String responsGetUserId = getUserId.get(urlGetUserid);
                     JSONObject jsonGetUserId = new JSONObject(responsGetUserId); // get json
                     Log.e("jsonGetUserId",jsonGetUserId.toString());
@@ -127,6 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                     signInIntent.putExtra("userId",userId);
                     signInIntent.putExtra("name", nameToken);
                     signInIntent.putExtra("profileImg",photoUri);
+                    signInIntent.putExtra("userEmail",emailToken);
                     startActivity(signInIntent);
                     finish();
 

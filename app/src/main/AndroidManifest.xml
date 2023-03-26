@@ -27,8 +27,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".PreviewDiaryDialog" />
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".DetailDiaryActivity"/>
         <activity android:name=".CreateDiaryActivity"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>

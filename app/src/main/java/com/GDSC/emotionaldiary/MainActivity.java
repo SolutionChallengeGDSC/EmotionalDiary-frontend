@@ -18,6 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,18 +34,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.GDSC.emotionaldiary.LoginActivity;
-import com.GDSC.emotionaldiary.TodoItem_Item;
-import com.GDSC.emotionaldiary.TodoItem_RecyclerViewAdapter;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter;
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter;
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,10 +53,14 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 // Todo : 일기 비밀번호 설정 dialog
+
+
 
 public class MainActivity extends AppCompatActivity {
     /*------------------------------------------Side Menu, User Info------------------------------------------ */
@@ -66,6 +74,13 @@ public class MainActivity extends AppCompatActivity {
     TextView txt_side_menu_userId;
     Uri userProfileImg;
     int userId = 0; // 임시 값, 추후 수정
+    String userEmail;
+
+    private static final int RESULT_DETAILDIARY = 0;
+
+    private ActivityResultLauncher<Intent> resultLauncher;
+    String selectedTodoDate; //
+    String selectedEndDate;
 
     /*------------------------------------------Side Menu, User Info------------------------------------------ */
 
@@ -97,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout todo_category;
     TextView txt_todo_category;
 
-    boolean isChecked;
+    boolean isChecked; // Diary_mode <-> Todo_Mode
     /*------------------------------------------Main------------------------------------------ */
 
 
@@ -288,6 +303,115 @@ public class MainActivity extends AppCompatActivity {
                 return calendarHeaderBuilder.toString();
             }
         });
+
+        calendar_todo.setOnDateChangedListener(new OnDateSelectedListener(){
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                // 선택한 날짜의 년, 월, 일 값
+                int year = date.getYear();
+                Integer month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더함.
+                Integer day = date.getDay();
+                selectedTodoDate = year + "-" + ((month).toString().length()==1 ? "0"+(month):(month).toString()) + "-" + ((day).toString().length()==1 ? "0"+(day):(day).toString());
+
+                Calendar calendar_2 = Calendar.getInstance();
+                calendar_2.set(date.getYear(), date.getMonth(), date.getDay());
+                Calendar nextDayCalendar = (Calendar) calendar_2.clone();
+
+                nextDayCalendar.add(Calendar.DAY_OF_MONTH, 1);
+                int endYear = nextDayCalendar.get(Calendar.YEAR);
+                Integer endMonth = nextDayCalendar.get(Calendar.MONTH) + 1;
+                Integer endDay = nextDayCalendar.get(Calendar.DAY_OF_MONTH);
+
+
+                selectedEndDate = endYear + "-" + (endMonth.toString().length() == 1 ? "0"+(endMonth):(endMonth.toString())) + "-" + ((endDay).toString().length()==1 ? "0"+(endDay):(endDay).toString());
+
+                String selectedDateForPost = selectedTodoDate+"T00:00:00";
+                String selectedEndDateForPost = selectedEndDate + "T00:00:00";
+
+                Log.e("selectedTodoDate",selectedTodoDate);
+                Log.e("selectedEndDate",selectedEndDate);
+                AtomicReference<JSONArray> responseTodos = new AtomicReference<>(new JSONArray());
+
+                String urlSearchTodo = "http://34.64.254.35/todo/search?start=0&limit=100&reverse=false";
+
+                class ThreadSearchTodo extends Thread{
+                    JSONArray testJArray;
+
+                    @Override
+                    public void run() {
+                        synchronized (this) {
+                            try{
+                                HttpClient searchTodo = new HttpClient(); // search Todo Post
+                                JSONObject jsonSearchTodo = new JSONObject();
+                                jsonSearchTodo.put("startTime",selectedDateForPost);
+                                jsonSearchTodo.put("endTime", selectedEndDateForPost);
+                                jsonSearchTodo.put("userEmail","test1@naver.com"); // 임시
+                                JSONArray categories = new JSONArray();
+                                jsonSearchTodo.putOpt("categories",categories);
+                                String responseSearchTodo = searchTodo.post(urlSearchTodo,jsonSearchTodo.toString());
+                                Log.e("json_posted",jsonSearchTodo.toString());
+                                Log.e("responseSearchTodo",responseSearchTodo);
+
+                                JSONObject jResponse = new JSONObject(responseSearchTodo.toString());
+                                Integer statusPost = jResponse.getInt("status");
+                                Log.e("statusPost",statusPost.toString());
+                                if(statusPost == 200){ // 투두 데이터 가져오기 완료
+                                    JSONObject resultSearchTodo = jResponse.getJSONObject("result");
+                                    testJArray = resultSearchTodo.getJSONArray("todos");
+                                }
+                        } catch (JSONException | IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                            notify();
+                        }
+                    } // run
+                }
+                ThreadSearchTodo t1 = new ThreadSearchTodo();
+
+                t1.start();
+
+                synchronized (t1) {
+                    try {
+                        t1.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                mtodoItems = new ArrayList();
+
+                for(int i = 0; i< t1.testJArray.length(); i++){
+                    try{
+                        TodoItem_Item todoItem = new TodoItem_Item(t1.testJArray.getJSONObject(i).getString("goal"));
+                        todoItem.setCheked(t1.testJArray.getJSONObject(i).getBoolean("success"));
+                        todoItem.setId(t1.testJArray.getJSONObject(i).getInt("id"));
+                        mtodoItems.add(todoItem);
+                    }catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                mRecyclerAdapter.setmTodoList(mtodoItems);
+            }
+        });
+
+        calendar_diary.setOnDateChangedListener(new OnDateSelectedListener(){
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                // 선택한 날짜의 년, 월, 일 값
+                int year = date.getYear();
+                int month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더함.
+                int day = date.getDay();
+                String selectedDiaryDate = year + "-" + month + "-" + day;
+                // 출력합니다.
+//                Toast.makeText(MainActivity.this, "selectedDiaryDate : " + selectedDiaryDate, Toast.LENGTH_SHORT).show();
+                Intent detailDiaryIntent = new Intent(MainActivity.this,DetailDiaryActivity.class);
+                detailDiaryIntent.putExtra("selectedDiaryDate",selectedDiaryDate);
+                launcher.launch(detailDiaryIntent);
+                // Todo : 날짜 값을 키 값으로 해서 다이어리 작성 화면
+            }
+        });
+
         /* ------------------------------------- feature : CalendarView ------------------------------------- */
 
 
@@ -299,7 +423,7 @@ public class MainActivity extends AppCompatActivity {
         TodoRecyclerview.setAdapter(mRecyclerAdapter);
 
 
-        mtodoItems = new ArrayList<>();
+
         todo_category = (LinearLayout) findViewById(R.id.todo_category);
         txt_todo_category = findViewById(R.id.txt_todo_category);
 
@@ -311,9 +435,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        for(int i = 1; i <= 5; i++){
-            mtodoItems.add(new TodoItem_Item("gun" + i));
-        }
+
         mRecyclerAdapter.setmTodoList(mtodoItems);
 
 
@@ -336,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
         userProfileImg = logInIntent.getParcelableExtra("profileImg");
         String userProfileName = logInIntent.getStringExtra("name");
         userId = logInIntent.getIntExtra("userId",0);
-
+        userEmail = logInIntent.getStringExtra("userEmail");
         if(!TextUtils.isEmpty(userProfileName)){
             txt_side_menu_userId.setText(userProfileName);
             Picasso.get().load(userProfileImg).into(img_side_menu_userImg);
@@ -473,14 +595,79 @@ public class MainActivity extends AppCompatActivity {
 
         Button ok_btn = dialogView.findViewById(R.id.saveBtn); // ok button
         ok_btn.setOnClickListener(new View.OnClickListener() {
+            class ThreadMakeTodo extends Thread{
+                @Override
+                public void run() {
+                    synchronized (this) {
+                        try{
+                            String urlMakeTodo = "http://34.64.254.35/todo";
+                            HttpClient makeTodo = new HttpClient(); // Make Todo Post
+                            JSONObject jsonMakeTodo = new JSONObject();
+                            jsonMakeTodo.put("goal",writeContents.getText().toString());
+                            jsonMakeTodo.put("category", "category2"); // 임시
+                            jsonMakeTodo.put("userEmail","test1@naver.com"); // 임시
+                            String responseMakeTodo = makeTodo.post(urlMakeTodo,jsonMakeTodo.toString());
+                            Log.e("json_posted",jsonMakeTodo.toString());
+                            Log.e("responseMakeTodo",responseMakeTodo);
+                        } catch (JSONException | IOException e) {
+                            Log.e("JSONException","JSONException E");
+                            throw new RuntimeException(e);
+                        }
+
+                        notify();
+                    }
+                } // run
+            }
+            class ThreadChangeCategory extends Thread{
+                @Override
+                public void run() {
+                    synchronized (this) {
+                        try{
+                            String urlChangeCategory = "http://34.64.254.35/todo/category/2"; // 1 : 임시(id)
+                            HttpClient ChangeCategory = new HttpClient(); // Make Todo Post
+                            JSONObject jsonChangeCategory = new JSONObject();
+                            jsonChangeCategory.put("category",txt_category.getText().toString());
+
+                            String responseChangeCategory = ChangeCategory.put(urlChangeCategory,jsonChangeCategory.toString());
+                            Log.e("json_posted changeCate",jsonChangeCategory.toString());
+                            Log.e("responseChangeCategory",responseChangeCategory);
+                        } catch (JSONException | IOException e) {
+                            Log.e("JSONException","JSONException E");
+                            throw new RuntimeException(e);
+                        }
+                        notify();
+                    }
+                } // run
+            }
             @Override
             public void onClick(View v) {
                 if(writeContents.getText().toString().length() != 0){
                     mtodoItems.add(new TodoItem_Item(writeContents.getText().toString()));
                     mRecyclerAdapter.setmTodoList(mtodoItems);
+
+                    ThreadMakeTodo t1 = new ThreadMakeTodo();
+                    t1.start();
+                    synchronized (t1) {
+                        try {
+                            t1.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
                 }
                 if(txt_category.getText().toString().length() != 0){
                     txt_todo_category.setText(txt_category.getText().toString());
+                    ThreadChangeCategory t2 = new ThreadChangeCategory();
+                    t2.start();
+                    synchronized (t2) {
+                        try {
+                            t2.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
                 }
                 alertDialog.dismiss();
             }
@@ -585,7 +772,7 @@ public class MainActivity extends AppCompatActivity {
                         try{
                             String urlSetPw = "http://34.64.254.35/user/" + userId + "/pass-hint";
                             // request setPw
-                            HttpPost postSetPw = new HttpPost();
+                            HttpClient postSetPw = new HttpClient();
                             JSONObject jsonSetPw = new JSONObject();
                             jsonSetPw.put("password",diaryPw);
                             jsonSetPw.put("hint",diaryPwHint);
@@ -666,5 +853,22 @@ public class MainActivity extends AppCompatActivity {
     }
     /* ------------------------------------- feature : log_out_dialog  ------------------------------------- */
 
-}
 
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult> ()
+            {
+                @Override
+                public void onActivityResult(ActivityResult data)
+                {
+                    Log.d("TAG", "data : " + data);
+                    if (data.getResultCode() == RESULT_DETAILDIARY)
+                    {
+                        Intent intent = data.getData();
+                        String result = intent.getStringExtra ("resultToMain");
+
+                        Toast.makeText(MainActivity.this, "result from detail : " + result, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+}
