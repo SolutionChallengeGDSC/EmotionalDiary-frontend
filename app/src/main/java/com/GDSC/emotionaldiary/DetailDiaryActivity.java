@@ -59,10 +59,10 @@ public class DetailDiaryActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.modify:
                 finish();
-                Intent intent = new Intent(getApplicationContext(), CreateDiaryActivity.class);
-                intent.putExtra("title", title.getText());
-                intent.putExtra("content", content.getText());
-                startActivity(intent);
+                Intent createDiaryIntent = new Intent(getApplicationContext(), CreateDiaryActivity.class);
+                createDiaryIntent.putExtra("title", title.getText());
+                createDiaryIntent.putExtra("content", content.getText());
+                startActivity(createDiaryIntent);
                 return true;
             case R.id.delete:
                 return true;
