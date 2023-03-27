@@ -76,11 +76,11 @@ public class MainActivity extends AppCompatActivity {
     int userId = 0; // 임시 값, 추후 수정
     String userEmail;
 
-    private static final int RESULT_DETAILDIARY = 0;
+    private static final int RESULT_DETAILDIARY = 0; // 임시 값
 
-    private ActivityResultLauncher<Intent> resultLauncher;
-    String selectedTodoDate; //
+    String selectedTodoDate;
     String selectedEndDate;
+
 
     /*------------------------------------------Side Menu, User Info------------------------------------------ */
 
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout main_mode_diary;
     ImageView img_recommended_music;
     ImageView img_recommended_movie;
-    AppCompatImageView btn_check_todo;
+    AppCompatImageView btn_add_category;
     AppCompatImageView refresh_recommended_music;
     AppCompatImageView refresh_recommended_movie;
     LinearLayout recommended_music;
@@ -330,7 +330,6 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.e("selectedTodoDate",selectedTodoDate);
                 Log.e("selectedEndDate",selectedEndDate);
-                AtomicReference<JSONArray> responseTodos = new AtomicReference<>(new JSONArray());
 
                 String urlSearchTodo = "http://34.64.254.35/todo/search?start=0&limit=100&reverse=false";
 
@@ -426,6 +425,7 @@ public class MainActivity extends AppCompatActivity {
 
         todo_category = (LinearLayout) findViewById(R.id.todo_category);
         txt_todo_category = findViewById(R.id.txt_todo_category);
+        btn_add_category = findViewById(R.id.btn_add_category);
 
 
         todo_category.setOnClickListener(new View.OnClickListener() {
@@ -437,6 +437,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         mRecyclerAdapter.setmTodoList(mtodoItems);
+
+        // Todo 카테고리 추가 버튼
+        btn_add_category.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "여깁니다 !", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         /*-------------------------------------------Main------------------------------------------*/
@@ -602,10 +610,12 @@ public class MainActivity extends AppCompatActivity {
                         try{
                             String urlMakeTodo = "http://34.64.254.35/todo";
                             HttpClient makeTodo = new HttpClient(); // Make Todo Post
+                            String selectedDateForPost = selectedTodoDate+"T00:00:00";
                             JSONObject jsonMakeTodo = new JSONObject();
                             jsonMakeTodo.put("goal",writeContents.getText().toString());
                             jsonMakeTodo.put("category", "category2"); // 임시
                             jsonMakeTodo.put("userEmail","test1@naver.com"); // 임시
+                            jsonMakeTodo.put("goalTime",selectedDateForPost);
                             String responseMakeTodo = makeTodo.post(urlMakeTodo,jsonMakeTodo.toString());
                             Log.e("json_posted",jsonMakeTodo.toString());
                             Log.e("responseMakeTodo",responseMakeTodo);
@@ -853,7 +863,7 @@ public class MainActivity extends AppCompatActivity {
     }
     /* ------------------------------------- feature : log_out_dialog  ------------------------------------- */
 
-
+    /**/
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult> ()
             {
