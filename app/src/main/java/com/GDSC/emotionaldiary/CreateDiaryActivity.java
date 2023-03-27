@@ -28,19 +28,11 @@ public class CreateDiaryActivity extends AppCompatActivity {
         title = findViewById(R.id.title);
         content = findViewById(R.id.content);
 
-        Intent getDetailIntent = getIntent();
-        try{
-            // 수정일 때
-            isUpdate = true;
-            diaryId = getDetailIntent.getLongExtra("diaryId", 0);
-            title.setText(getDetailIntent.getStringExtra("title"));
-            content.setText(getDetailIntent.getStringExtra("content"));
-        }catch (NullPointerException e){
-            // 작성일 때
-            isUpdate = false;
-            title.setText("");
-            content.setText("");
-        }
+        Intent getIntent = getIntent();
+        isUpdate = getIntent.getBooleanExtra("isUpdate", false);
+        diaryId = getIntent.getLongExtra("diaryId", 0);
+        title.setText(getIntent.getStringExtra("title"));
+        content.setText(getIntent.getStringExtra("content"));
 
         // 닫기 버튼
         close_btn = findViewById(R.id.close_btn);
@@ -58,6 +50,9 @@ public class CreateDiaryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(isUpdate) {  // 수정일 때
                     new Thread(() -> {putDiary(diaryId);}).start();
+                }
+                else {  // 작성일 때
+                    new Thread(() -> {postDiary();}).start();
                 }
             }
         });
@@ -89,7 +84,6 @@ public class CreateDiaryActivity extends AppCompatActivity {
     }
 
     public void putDiary(Long id) {
-        String responseString = null;
         try {
             String userEmail = "test1@naver.com";  // 임시
             OkHttpClient client = new OkHttpClient();
@@ -97,6 +91,26 @@ public class CreateDiaryActivity extends AppCompatActivity {
             String strBody = String.format("{\"title\" : \"%s\", \"content\" : \"%s\", \"userEmail\" : \"%s\"}", title.getText(), content.getText(), userEmail);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), strBody);
             okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).put(requestBody);
+            builder.addHeader("Content-type", "application/json");
+            okhttp3.Request request = builder.build();
+            okhttp3.Response response = client.newCall(request).execute();
+            if(response.isSuccessful()) {
+                response.body().close();
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void postDiary() {
+        try {
+            String userEmail = "test1@naver.com";  // 임시
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://34.64.254.35/diary";
+            String strBody = String.format("{\"title\" : \"%s\", \"content\" : \"%s\", \"userEmail\" : \"%s\"}", title.getText(), content.getText(), userEmail);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), strBody);
+            okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).post(requestBody);
             builder.addHeader("Content-type", "application/json");
             okhttp3.Request request = builder.build();
             okhttp3.Response response = client.newCall(request).execute();

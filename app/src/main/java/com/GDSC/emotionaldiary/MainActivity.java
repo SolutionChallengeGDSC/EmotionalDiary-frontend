@@ -909,6 +909,7 @@ public class MainActivity extends AppCompatActivity {
             if(diariesStr.equals("[]")) {
                 // 일기 작성 페이지로 전환
                 Intent createDiaryIntent = new Intent(getApplicationContext(), CreateDiaryActivity.class);
+                createDiaryIntent.putExtra("isUpdate", false);
                 startActivity(createDiaryIntent);
             }
             else {

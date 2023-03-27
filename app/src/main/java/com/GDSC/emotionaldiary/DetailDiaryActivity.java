@@ -64,6 +64,7 @@ public class DetailDiaryActivity extends AppCompatActivity {
                 createDiaryIntent.putExtra("diaryId", diaryId);
                 createDiaryIntent.putExtra("title", title.getText());
                 createDiaryIntent.putExtra("content", content.getText());
+                createDiaryIntent.putExtra("isUpdate", true);
                 startActivity(createDiaryIntent);
                 return true;
             case R.id.delete:
