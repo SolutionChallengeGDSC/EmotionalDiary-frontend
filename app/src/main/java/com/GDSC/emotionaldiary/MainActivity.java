@@ -917,7 +917,7 @@ public class MainActivity extends AppCompatActivity {
                 Long id = new JSONObject(array.get(0).toString()).getLong("id");
                 Intent detailDiaryIntent = new Intent(MainActivity.this, DetailDiaryActivity.class);
                 detailDiaryIntent.putExtra("diaryId", id);
-                launcher.launch(detailDiaryIntent);
+                startActivity(detailDiaryIntent);
             }
         }catch (Exception e) {
             e.printStackTrace();
