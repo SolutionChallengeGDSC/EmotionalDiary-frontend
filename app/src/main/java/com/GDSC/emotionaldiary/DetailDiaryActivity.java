@@ -1,19 +1,14 @@
 package com.GDSC.emotionaldiary;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,13 +17,16 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
+
+import org.json.JSONObject;
+
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+
 // Todo 날짜 값을 키 값으로 title, content 값 세팅 : 백엔드 연결
 public class DetailDiaryActivity extends AppCompatActivity {
-    private TextView title, content;
-    String selectedDate;
+    private TextView title, content, datetime;
     private static final int RESULT_DETAILDIARY = 0;
     private static final int RESULT_CREATEDIARY = 1;
 
@@ -38,6 +36,10 @@ public class DetailDiaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_diary);
 
+        title = findViewById(R.id.title);
+        content = findViewById(R.id.content);
+        datetime = findViewById(R.id.datetime);
+
         Toolbar toolbar = findViewById (R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -46,7 +48,8 @@ public class DetailDiaryActivity extends AppCompatActivity {
 
 
         Intent getDetailDiary = getIntent();
-        selectedDate = getDetailDiary.getStringExtra("selectedDate"); // 날짜
+        Long diaryId = getDetailDiary.getLongExtra("diaryId", 0);
+        new Thread(() -> {getDiary(diaryId);}).start();
 
         Button.OnClickListener onClickListener = new Button.OnClickListener() {
             @Override
@@ -81,8 +84,6 @@ public class DetailDiaryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        title = findViewById(R.id.title);
-        content = findViewById(R.id.content);
         switch (item.getItemId()) {
             case R.id.modify:
                 Intent intent = new Intent(DetailDiaryActivity.this, CreateDiaryActivity.class);
@@ -117,4 +118,36 @@ public class DetailDiaryActivity extends AppCompatActivity {
 
             });
 
+    public void getDiary(Long id) {
+        String responseString = null;
+        try {
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://34.64.254.35/diary/"+id;
+            okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).get();
+            builder.addHeader("Content-type", "application/json");
+            okhttp3.Request request = builder.build();
+            okhttp3.Response response = client.newCall(request).execute();
+            if(response.isSuccessful()) {
+                ResponseBody body = response.body();
+                responseString = body.string();
+                body.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String responseStr = new JSONObject(responseString).getString("result");
+            String getTitle = new JSONObject(responseStr).getString("title");
+            String getContent = new JSONObject(responseStr).getString("content");
+            String getCreatedAt = new JSONObject(responseStr).getString("createdAt");
+            getCreatedAt = getCreatedAt.replace("T", " ").substring(0, 16);
+
+            title.setText(getTitle);
+            content.setText(getContent);
+            datetime.setText(getCreatedAt);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
