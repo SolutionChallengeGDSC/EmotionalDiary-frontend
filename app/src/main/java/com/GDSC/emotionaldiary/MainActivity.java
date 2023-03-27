@@ -58,6 +58,10 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 // Todo : 일기 비밀번호 설정 dialog
 
 
@@ -358,9 +362,9 @@ public class MainActivity extends AppCompatActivity {
                                     JSONObject resultSearchTodo = jResponse.getJSONObject("result");
                                     testJArray = resultSearchTodo.getJSONArray("todos");
                                 }
-                        } catch (JSONException | IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                            } catch (JSONException | IOException e) {
+                                throw new RuntimeException(e);
+                            }
 
                             notify();
                         }
@@ -399,14 +403,11 @@ public class MainActivity extends AppCompatActivity {
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 // 선택한 날짜의 년, 월, 일 값
                 int year = date.getYear();
-                int month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더함.
-                int day = date.getDay();
-                String selectedDiaryDate = year + "-" + month + "-" + day;
-                // 출력합니다.
-//                Toast.makeText(MainActivity.this, "selectedDiaryDate : " + selectedDiaryDate, Toast.LENGTH_SHORT).show();
-                Intent detailDiaryIntent = new Intent(MainActivity.this,DetailDiaryActivity.class);
-                detailDiaryIntent.putExtra("selectedDiaryDate",selectedDiaryDate);
-                launcher.launch(detailDiaryIntent);
+                Integer month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더함.
+                Integer day = date.getDay();
+                String selectedDiaryDate = year + "-" + ((month).toString().length()==1 ? "0"+(month):(month).toString()) + "-" + ((day).toString().length()==1 ? "0"+(day):(day).toString());
+
+                new Thread(() -> {getDiary(selectedDiaryDate);}).start();
                 // Todo : 날짜 값을 키 값으로 해서 다이어리 작성 화면
             }
         });
@@ -881,4 +882,45 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    public void getDiary(String date) {
+        String responseString = null;
+        try {
+            userEmail = "test1@naver.com";  // 임시
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://34.64.254.35/diary/list";
+            String strBody = String.format("{\"createdAt\" : \"%s\", \"userEmail\" : \"%s\"}", date, userEmail);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), strBody);
+            okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).post(requestBody);
+            builder.addHeader("Content-type", "application/json");
+            okhttp3.Request request = builder.build();
+            okhttp3.Response response = client.newCall(request).execute();
+            if(response.isSuccessful()) {
+                ResponseBody body = response.body();
+                responseString = body.string();
+                body.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String responseStr = new JSONObject(responseString).getString("result");
+            String diariesStr = new JSONObject(responseStr).getString("diaries");
+            if(diariesStr.equals("[]")) {
+                // 일기 작성 페이지로 전환
+                Intent createDiaryIntent = new Intent(getApplicationContext(), CreateDiaryActivity.class);
+                startActivity(createDiaryIntent);
+            }
+            else {
+                // 일기 상세 페이지로 전환
+                JSONArray array = new JSONArray(diariesStr);
+                Long id = new JSONObject(array.get(0).toString()).getLong("id");
+                Intent detailDiaryIntent = new Intent(MainActivity.this, DetailDiaryActivity.class);
+                detailDiaryIntent.putExtra("diaryId", id);
+                launcher.launch(detailDiaryIntent);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
