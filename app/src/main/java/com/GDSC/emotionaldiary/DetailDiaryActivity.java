@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 
 public class DetailDiaryActivity extends AppCompatActivity {
+    private ImageButton btn_close;
     private TextView title, content, datetime;
 
     @Override
@@ -26,7 +29,7 @@ public class DetailDiaryActivity extends AppCompatActivity {
         title = findViewById(R.id.title);
         content = findViewById(R.id.content);
         datetime = findViewById(R.id.datetime);
-
+        btn_close = findViewById(R.id.btn_close);
         Toolbar toolbar = findViewById (R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -34,6 +37,13 @@ public class DetailDiaryActivity extends AppCompatActivity {
         Intent getIntent = getIntent();
         Long diaryId = getIntent.getLongExtra("diaryId", 0);
         new Thread(() -> {getDiary(diaryId);}).start();
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
