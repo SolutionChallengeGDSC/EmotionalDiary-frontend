@@ -20,6 +20,7 @@ import okhttp3.ResponseBody;
 public class DetailDiaryActivity extends AppCompatActivity {
     private ImageButton btn_close;
     private TextView title, content, datetime;
+    Long diaryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class DetailDiaryActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Intent getIntent = getIntent();
-        Long diaryId = getIntent.getLongExtra("diaryId", 0);
+        diaryId = getIntent.getLongExtra("diaryId", 0);
         new Thread(() -> {getDiary(diaryId);}).start();
 
         btn_close.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +61,7 @@ public class DetailDiaryActivity extends AppCompatActivity {
             case R.id.modify:
                 finish();
                 Intent createDiaryIntent = new Intent(getApplicationContext(), CreateDiaryActivity.class);
+                createDiaryIntent.putExtra("diaryId", diaryId);
                 createDiaryIntent.putExtra("title", title.getText());
                 createDiaryIntent.putExtra("content", content.getText());
                 startActivity(createDiaryIntent);
