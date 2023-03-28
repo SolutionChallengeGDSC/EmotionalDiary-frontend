@@ -69,6 +69,7 @@ public class DetailDiaryActivity extends AppCompatActivity {
                 startActivity(createDiaryIntent);
                 return true;
             case R.id.delete:
+                new Thread(() -> {delDiary(diaryId);}).start();
                 return true;
             case R.id.cancel:
                 return true;
@@ -106,6 +107,24 @@ public class DetailDiaryActivity extends AppCompatActivity {
             date.setText(getDate);
 
         }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void delDiary(Long id) {
+        try {
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://34.64.254.35/diary/"+id;
+            okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).delete();
+            builder.addHeader("Content-type", "application/json");
+            okhttp3.Request request = builder.build();
+            okhttp3.Response response = client.newCall(request).execute();
+            if(response.isSuccessful()) {
+                ResponseBody body = response.body();
+                body.close();
+                finish();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
