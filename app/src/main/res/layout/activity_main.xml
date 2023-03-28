@@ -189,8 +189,81 @@
                                 android:layout_marginTop="8dp"
                                 />
 
-                            <!-- 바닥과의 간격을 위해. -->
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5px"
+                                android:background="#C5DEDA"
+                                android:layout_marginTop="8dp"
+                                />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:orientation="vertical"
+                                >
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Recommended Todo"
+                                    android:textSize="20dp"
+                                    android:textColor="@color/black"
+                                    />
+                                <LinearLayout
+                                    android:id="@+id/layout_recommended_todo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:layout_marginTop="12dp"
+                                    android:weightSum="12"
+                                    >
+                                    <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/btn_check_recommended_todo"
+                                        android:layout_width="0dp"
+                                        android:layout_height="28dp"
+                                        android:layout_weight="2"
+                                        android:adjustViewBounds="true"
+                                        app:srcCompat="@drawable/selector_todo_check"
+                                        android:layout_gravity="center"
+                                        />
+                                    <TextView
+                                        android:id="@+id/txt_recommended_todo"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="9"
+                                        android:layout_marginStart="8dp"
+                                        android:text="Todo1"
+                                        android:textSize="28dp"
+                                        android:visibility="visible"
+                                        android:layout_gravity="center"
+                                        android:textColor="@color/black"
+                                        />
+                                    <TextView
+                                        android:id="@+id/txt_recommended_todo_complete"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="9"
+                                        android:layout_marginStart="8dp"
+                                        android:text="Todo1"
+                                        android:textSize="28dp"
+                                        android:visibility="gone"
+                                        android:layout_gravity="center"
+                                        android:textColor="#808080"
+                                        />
 
+                                    <!-- 지우거나 새로고침으로 바꾸거나 -->
+
+                                    <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/btn_remove_todo"
+                                        android:layout_width="0dp"
+                                        android:layout_height="24dp"
+                                        android:layout_weight="1"
+                                        android:adjustViewBounds="true"
+                                        app:srcCompat="@drawable/todo_ic_remove_todo"
+                                        android:layout_gravity="center"
+                                        />
+                                </LinearLayout>
+                            </LinearLayout>
+                            <!-- 바닥과의 간격을 위해. -->
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="50dp"
@@ -221,6 +294,7 @@
                             />
 
                         <LinearLayout
+                            android:id="@+id/layout_recommended_music"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
@@ -295,18 +369,19 @@
 
                         </LinearLayout>
                         <View
+                            android:id="@+id/line_recommend"
                             android:layout_width="match_parent"
                             android:layout_height="0.5px"
                             android:background="#C5DEDA"
                             android:layout_marginTop="8dp"
                             />
                         <LinearLayout
+                            android:id="@+id/layout_recommended_movie"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginTop="12dp"
                             android:layout_marginBottom="16dp"
-
                             >
                             <TextView
                                 android:layout_width="wrap_content"
@@ -375,10 +450,17 @@
                                     app:srcCompat="@drawable/main_ic_refresh"
                                     android:layout_gravity="center"
                                     />
-
                             </LinearLayout>
 
                         </LinearLayout>
+                        <TextView
+                            android:id="@+id/txt_recommend_not_yet"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No Recommend !"
+                            android:gravity="center"
+                            android:textSize="32dp"
+                            />
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5px"

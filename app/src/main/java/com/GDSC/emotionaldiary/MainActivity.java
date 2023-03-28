@@ -2,6 +2,8 @@ package com.GDSC.emotionaldiary;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -63,7 +65,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainActivity extends AppCompatActivity {
-    /*------------------------------------------Side Menu, User Info------------------------------------------ */
+    /* ------------------------------------------Side Menu, User Info------------------------------------------ */
     private DrawerLayout mainDrawerLayout;
     private AppCompatImageView openMenuButton;
     TextView main_navigation_txt_logout;
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     /*------------------------------------------Side Menu, User Info------------------------------------------ */
 
     /*------------------------------------------Main------------------------------------------ */
+
     TextView textDiary;
     TextView textTodo;
     TextView title_recommended_music;
@@ -113,6 +116,16 @@ public class MainActivity extends AppCompatActivity {
     TextView txt_todo_category;
 
     boolean isChecked; // Diary_mode <-> Todo_Mode
+
+    LinearLayout layout_recommended_music;
+    LinearLayout layout_recommended_movie;
+    View line_recommend;
+    TextView txt_recommend_not_yet;
+    LinearLayout layout_recommended_todo;
+    boolean isCompleteRecommendedTodo = false;
+    AppCompatImageView btn_check_recommended_todo;
+    TextView txt_recommended_todo;
+    TextView txt_recommended_todo_complete;
     /*------------------------------------------Main------------------------------------------ */
 
 
@@ -135,52 +148,134 @@ public class MainActivity extends AppCompatActivity {
         main_mode_todo = (LinearLayout) findViewById(R.id.main_mode_todo); // main_todo
         main_mode_diary = (LinearLayout) findViewById(R.id.main_mode_diary); // main_diary
 
-        recommended_music = findViewById(R.id.recommended_music); // recommended_music Layout
+
+        layout_recommended_music = findViewById(R.id.layout_recommended_music); // recommended_mucic layout
+        recommended_music = findViewById(R.id.recommended_music); // recommended_music
         img_recommended_music = findViewById(R.id.img_recommended_music); // recommended_music Image
         title_recommended_music = findViewById(R.id.title_recommended_music); // recommended_music Title
         info_recommended_music = findViewById(R.id.info_recommended_music); // recommended_music Info
         refresh_recommended_music = findViewById(R.id.refresh_recommended_music); // recommended_music refresh Button
 
-        recommended_movie = findViewById(R.id.recommended_movie); // recommended_movie Layout
+        line_recommend = findViewById(R.id.line_recommend);
+
+        layout_recommended_movie = findViewById(R.id.layout_recommended_movie); // recommended_movie layout
+        recommended_movie = findViewById(R.id.recommended_movie); // recommended_movie
         img_recommended_movie = findViewById(R.id.img_recommended_movie); // recommended_movie Image
         title_recommended_movie = findViewById(R.id.title_recommended_movie); // recommended_movie Title
         info_recommended_movie = findViewById(R.id.info_recommended_movie); // recommended_movie Director
         refresh_recommended_movie = findViewById(R.id.refresh_recommended_movie); // recommended_movie refresh Button
+        txt_recommend_not_yet = findViewById(R.id.txt_recommend_not_yet);
+
+        layout_recommended_todo = findViewById(R.id.layout_recommended_todo);
+        btn_check_recommended_todo = findViewById(R.id.btn_check_recommended_todo);
+        txt_recommended_todo = findViewById(R.id.txt_recommended_todo);
+        txt_recommended_todo_complete = findViewById(R.id.txt_recommended_todo_complete);
+        txt_recommended_todo_complete.setPaintFlags(txt_recommended_todo_complete.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        txt_recommended_todo_complete.setTypeface(null, Typeface.ITALIC);
 
         isChecked = false;
 
 
+        /*-------------------------------------------Setting Recommend------------------------------------------*/
+
+        Object[] musicImgList = {R.drawable.main_img_music1,R.drawable.main_img_music2,R.drawable.main_img_music3,R.drawable.main_img_music4,R.drawable.main_img_music5,R.drawable.main_img_music6,R.drawable.main_img_music7};
+        Object[] movieImgList = {R.drawable.main_img_movie1,R.drawable.main_img_movie2,R.drawable.main_img_movie3,R.drawable.main_img_movie4,R.drawable.main_img_movie5,R.drawable.main_img_movie6,R.drawable.main_img_movie7};
+
+        class ThreadSettingRecommend extends Thread {
+            ArrayList<String> movieTitleArray = new ArrayList<>();
+            ArrayList<String> movieProducerArray = new ArrayList<>();
+            ArrayList<String> songTitleArray = new ArrayList<>();
+            ArrayList<String> songProducerArray = new ArrayList<>();
+            boolean recommendComplete = false;
+            JSONArray movieJsonArray;
+            JSONArray musicJsonArray;
+            @Override
+            public void run() {
+                synchronized (this) {
+                    try{
+                        HttpClient settingRecommend = new HttpClient(); // search Todo Post
+                        String urlSettingRecommend = "http://34.64.254.35/user/1/recommend";
 
 
-        /*-------------------------------------------Main------------------------------------------*/
-        Object[][] musicList = {{R.drawable.main_img_music1,"Stay this way","fromis_9"},
-                {R.drawable.main_img_music2,"Ditto","NewJeans"},
-                {R.drawable.main_img_music3,"DM","fromis_9"},
-                {R.drawable.main_img_music4,"Feel Good","fromis_9"},
-                {R.drawable.main_img_music5,"We go","fromis_9"},
-                {R.drawable.main_img_music6,"Love Bomb","fromis_9"},
-                {R.drawable.main_img_music7,"Talk & Talk","fromis_9"}
-        };
-        Object[][] movieList = {{R.drawable.main_img_movie1,"대외비","이원태"},
-                {R.drawable.main_img_movie2,"더 퍼스트 슬램덩크","이노우에 다케히코"},
-                {R.drawable.main_img_movie3,"앤트맨과 와스프: 퀀텀매니아","페이튼 리드"},
-                {R.drawable.main_img_movie4,"서치 2","니콜라스 D. 존슨"},
-                {R.drawable.main_img_movie5,"귀멸의 칼날: 상현집결, 그리고 도공 마을로","소토자키 하루오"},
-                {R.drawable.main_img_movie6,"아임 히어로 더 파이널","오윤동"},
-                {R.drawable.main_img_movie7,"카운트","권혁재"}
-        };
+                        String responseSettingRecommend = settingRecommend.get(urlSettingRecommend);
+                        Log.e("responseSettingRecommend",responseSettingRecommend);
+
+                        JSONObject jResponse = new JSONObject(responseSettingRecommend);
+                        Integer statusGet = jResponse.getInt("status");
+
+                        if(statusGet == 200){ // 추천 조회 성공
+                            JSONObject resultJsonObject = jResponse.getJSONObject("result");
+                            movieJsonArray = resultJsonObject.getJSONArray("movie"); // 추천 영화
+                            if(movieJsonArray.length() == 0){ // 추천 완료되지 않음
+                                recommendComplete = false;
+                            }
+                            else{ // 추천 완료 됨
+                                recommendComplete = true;
+                                musicJsonArray = resultJsonObject.getJSONArray("song"); // 추천 음악
+                                for(int i = 0; i < movieJsonArray.length();i++){
+                                    JSONObject movieItem = movieJsonArray.getJSONObject(i);
+                                    movieTitleArray.add(movieItem.getString("title")); // movie : title -> titleArray add
+                                    movieProducerArray.add(movieItem.getString("producer")); // movie : producer -> producerArray add
+                                }
+                                for(int i = 0; i < musicJsonArray.length();i++){
+                                    JSONObject musicItem = musicJsonArray.getJSONObject(i);
+                                    songTitleArray.add(musicItem.getString("title")); // movie : title -> titleArray add
+                                    songProducerArray.add(musicItem.getString("producer")); // movie : producer -> producerArray add
+                                }
+
+                            }
+                            Log.e("resultJsonArray", resultJsonObject.toString());
+                            Log.e("resultJsonArray length", String.valueOf(resultJsonObject.length()));
+                            Log.e("movieJsonArray", String.valueOf(movieJsonArray.length()));
+                        }
+                    } catch (JSONException | IOException e) {
+                        Log.e("resultSettingRecommend null","0");
+                        throw new RuntimeException(e);
+                    }
+
+                    notify();
+                }
+            } // run
+        }
+        ThreadSettingRecommend tsr = new ThreadSettingRecommend();
+
+        tsr.start();
+
+        synchronized (tsr) {
+            try {
+                tsr.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if(tsr.recommendComplete){ // 음악 및 영화 추천 완료
+            layout_recommended_music.setVisibility(View.VISIBLE);
+            layout_recommended_movie.setVisibility(View.VISIBLE);
+            line_recommend.setVisibility(View.VISIBLE);
+            txt_recommend_not_yet.setVisibility(View.GONE);
 
 
+            int randomNum_music = (int) (Math.random() * tsr.musicJsonArray.length());
+            title_recommended_music.setText(tsr.songTitleArray.get(randomNum_music));
+            info_recommended_music.setText(tsr.songProducerArray.get(randomNum_music));
 
-        int randomNum_music = (int) (Math.random() * musicList.length);
-        img_recommended_music.setImageResource((Integer) musicList[randomNum_music][0]);
-        title_recommended_music.setText((CharSequence) musicList[randomNum_music][1]);
-        info_recommended_music.setText((CharSequence) musicList[randomNum_music][2]);
+            int randomNum_movie = (int) (Math.random() * tsr.movieJsonArray.length());
+            title_recommended_movie.setText(tsr.movieTitleArray.get(randomNum_movie));
+            info_recommended_movie.setText(tsr.movieProducerArray.get(randomNum_movie));
 
-        int randomNum_movie = (int) (Math.random() * movieList.length);
-        img_recommended_movie.setImageResource((Integer) movieList[randomNum_movie][0]);
-        title_recommended_movie.setText((CharSequence) movieList[randomNum_movie][1]);
-        info_recommended_movie.setText((CharSequence) movieList[randomNum_movie][2]);
+            int randomNum_musicImg = (int) (Math.random() * musicImgList.length);
+            img_recommended_music.setImageResource((Integer) movieImgList[randomNum_musicImg]);
+
+            int randomNum_movieImg = (int) (Math.random() * movieImgList.length);
+            img_recommended_movie.setImageResource((Integer) movieImgList[randomNum_movieImg]);
+        }
+        else{
+            layout_recommended_music.setVisibility(View.GONE);
+            layout_recommended_movie.setVisibility(View.GONE);
+            line_recommend.setVisibility(View.GONE);
+            txt_recommend_not_yet.setVisibility(View.VISIBLE);
+        }
 
         recommended_music.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,13 +286,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        refresh_recommended_music.setOnClickListener(new View.OnClickListener() {
+        refresh_recommended_music.setOnClickListener(new View.OnClickListener() { // 새로 고침
             @Override
             public void onClick(View v) {
-                int randomNum = (int) (Math.random() * musicList.length);
-                img_recommended_music.setImageResource((Integer) musicList[randomNum][0]);
-                title_recommended_music.setText((CharSequence) musicList[randomNum][1]);
-                info_recommended_music.setText((CharSequence) musicList[randomNum][2]);
+                int randomNum_music = (int) (Math.random() * tsr.musicJsonArray.length());
+                int randomNum_musicImg = (int) (Math.random() * musicImgList.length);
+                img_recommended_music.setImageResource((Integer) musicImgList[randomNum_musicImg]);
+                title_recommended_music.setText(tsr.songTitleArray.get(randomNum_music));
+                info_recommended_music.setText(tsr.songProducerArray.get(randomNum_music));
             }
         });
 
@@ -213,13 +309,35 @@ public class MainActivity extends AppCompatActivity {
         refresh_recommended_movie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int randomNum = (int) (Math.random() * movieList.length);
-                img_recommended_movie.setImageResource((Integer) movieList[randomNum][0]);
-                title_recommended_movie.setText((CharSequence) movieList[randomNum][1]);
-                info_recommended_movie.setText((CharSequence) movieList[randomNum][2]);
+                int randomNum_movie = (int) (Math.random() * tsr.movieJsonArray.length());
+                int randomNum_movieImg = (int) (Math.random() * movieImgList.length);
+                img_recommended_movie.setImageResource((Integer) movieImgList[randomNum_movieImg]);
+                title_recommended_movie.setText(tsr.movieTitleArray.get(randomNum_movie));
+                info_recommended_movie.setText(tsr.movieProducerArray.get(randomNum_movie));
             }
         });
 
+
+        btn_check_recommended_todo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isCompleteRecommendedTodo = isCompleteRecommendedTodo ? false : true;
+                if(isCompleteRecommendedTodo){
+                    btn_check_recommended_todo.setImageResource(R.drawable.ic_check_todo);
+                    txt_recommended_todo_complete.setVisibility(View.VISIBLE);
+                    txt_recommended_todo.setVisibility(View.GONE);
+                }else{
+                    btn_check_recommended_todo.setImageResource(R.drawable.ic_check_not_todo);
+                    txt_recommended_todo.setVisibility(View.VISIBLE);
+                    txt_recommended_todo_complete.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+        /*-------------------------------------------Setting Recommend------------------------------------------*/
+
+        /*-------------------------------------------Main------------------------------------------*/
 
 
 
@@ -326,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
                 selectedEndDate = endYear + "-" + (endMonth.toString().length() == 1 ? "0"+(endMonth):(endMonth.toString())) + "-" + ((endDay).toString().length()==1 ? "0"+(endDay):(endDay).toString());
 
                 String selectedDateForPost = selectedTodoDate+"T00:00:00";
-                String selectedEndDateForPost = selectedEndDate + "T00:00:00";
+                String selectedEndDateForPost = selectedTodoDate + "T23:59:59";
 
                 Log.e("selectedTodoDate",selectedTodoDate);
                 Log.e("selectedEndDate",selectedEndDate);
@@ -358,9 +476,9 @@ public class MainActivity extends AppCompatActivity {
                                     JSONObject resultSearchTodo = jResponse.getJSONObject("result");
                                     testJArray = resultSearchTodo.getJSONArray("todos");
                                 }
-                        } catch (JSONException | IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                            } catch (JSONException | IOException e) {
+                                throw new RuntimeException(e);
+                            }
 
                             notify();
                         }
@@ -808,11 +926,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("IOException : ", e.getMessage());
                         }
 
-
                     }).start();
-
-
-
 
 
                 }
