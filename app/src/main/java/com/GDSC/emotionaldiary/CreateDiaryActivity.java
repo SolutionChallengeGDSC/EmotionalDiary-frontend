@@ -19,6 +19,7 @@ public class CreateDiaryActivity extends AppCompatActivity {
     private EditText title, content;
     boolean isUpdate;
     Long diaryId;
+    String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class CreateDiaryActivity extends AppCompatActivity {
         diaryId = getIntent.getLongExtra("diaryId", 0);
         title.setText(getIntent.getStringExtra("title"));
         content.setText(getIntent.getStringExtra("content"));
+        date = getIntent.getStringExtra("date");
 
         // 닫기 버튼
         close_btn = findViewById(R.id.close_btn);
@@ -86,9 +88,10 @@ public class CreateDiaryActivity extends AppCompatActivity {
     public void putDiary(Long id) {
         try {
             String userEmail = "test1@naver.com";  // 임시
+            int score = 55;  // 임시
             OkHttpClient client = new OkHttpClient();
             String url = "http://34.64.254.35/diary/"+id;
-            String strBody = String.format("{\"title\" : \"%s\", \"content\" : \"%s\", \"userEmail\" : \"%s\"}", title.getText(), content.getText(), userEmail);
+            String strBody = String.format("{\"title\" : \"%s\", \"content\" : \"%s\", \"date\" : \"%s\", \"score\" : %d, \"userEmail\" : \"%s\"}", title.getText(), content.getText(), date, score, userEmail);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), strBody);
             okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).put(requestBody);
             builder.addHeader("Content-type", "application/json");
@@ -106,9 +109,10 @@ public class CreateDiaryActivity extends AppCompatActivity {
     public void postDiary() {
         try {
             String userEmail = "test1@naver.com";  // 임시
+            int score = 50;  // 임시
             OkHttpClient client = new OkHttpClient();
             String url = "http://34.64.254.35/diary";
-            String strBody = String.format("{\"title\" : \"%s\", \"content\" : \"%s\", \"userEmail\" : \"%s\"}", title.getText(), content.getText(), userEmail);
+            String strBody = String.format("{\"title\" : \"%s\", \"content\" : \"%s\", \"date\" : \"%s\", \"score\" : %d, \"userEmail\" : \"%s\"}", title.getText(), content.getText(), date, score, userEmail);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), strBody);
             okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).post(requestBody);
             builder.addHeader("Content-type", "application/json");

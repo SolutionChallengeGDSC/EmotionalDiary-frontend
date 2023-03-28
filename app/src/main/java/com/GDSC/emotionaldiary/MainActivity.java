@@ -888,7 +888,7 @@ public class MainActivity extends AppCompatActivity {
             userEmail = "test1@naver.com";  // 임시
             OkHttpClient client = new OkHttpClient();
             String url = "http://34.64.254.35/diary/list";
-            String strBody = String.format("{\"createdAt\" : \"%s\", \"userEmail\" : \"%s\"}", date, userEmail);
+            String strBody = String.format("{\"date\" : \"%s\", \"userEmail\" : \"%s\"}", date, userEmail);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), strBody);
             okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).post(requestBody);
             builder.addHeader("Content-type", "application/json");
@@ -910,6 +910,7 @@ public class MainActivity extends AppCompatActivity {
                 // 일기 작성 페이지로 전환
                 Intent createDiaryIntent = new Intent(getApplicationContext(), CreateDiaryActivity.class);
                 createDiaryIntent.putExtra("isUpdate", false);
+                createDiaryIntent.putExtra("date", date);
                 startActivity(createDiaryIntent);
             }
             else {

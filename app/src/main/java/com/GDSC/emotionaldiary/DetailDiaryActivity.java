@@ -19,7 +19,7 @@ import okhttp3.ResponseBody;
 
 public class DetailDiaryActivity extends AppCompatActivity {
     private ImageButton btn_close;
-    private TextView title, content, datetime;
+    private TextView title, content, date;
     Long diaryId;
 
     @Override
@@ -29,7 +29,7 @@ public class DetailDiaryActivity extends AppCompatActivity {
 
         title = findViewById(R.id.title);
         content = findViewById(R.id.content);
-        datetime = findViewById(R.id.datetime);
+        date = findViewById(R.id.date);
         btn_close = findViewById(R.id.btn_close);
         Toolbar toolbar = findViewById (R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,6 +64,7 @@ public class DetailDiaryActivity extends AppCompatActivity {
                 createDiaryIntent.putExtra("diaryId", diaryId);
                 createDiaryIntent.putExtra("title", title.getText());
                 createDiaryIntent.putExtra("content", content.getText());
+                createDiaryIntent.putExtra("date", date.getText());
                 createDiaryIntent.putExtra("isUpdate", true);
                 startActivity(createDiaryIntent);
                 return true;
@@ -97,12 +98,13 @@ public class DetailDiaryActivity extends AppCompatActivity {
             String responseStr = new JSONObject(responseString).getString("result");
             String getTitle = new JSONObject(responseStr).getString("title");
             String getContent = new JSONObject(responseStr).getString("content");
-            String getCreatedAt = new JSONObject(responseStr).getString("createdAt");
-            getCreatedAt = getCreatedAt.replace("T", " ").substring(0, 16);
+            String getDate = new JSONObject(responseStr).getString("date");
+            getDate = getDate.substring(0, 10);
 
             title.setText(getTitle);
             content.setText(getContent);
-            datetime.setText(getCreatedAt);
+            date.setText(getDate);
+
         }catch (Exception e) {
             e.printStackTrace();
         }
