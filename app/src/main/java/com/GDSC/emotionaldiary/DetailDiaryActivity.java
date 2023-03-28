@@ -2,6 +2,7 @@ package com.GDSC.emotionaldiary;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +22,9 @@ public class DetailDiaryActivity extends AppCompatActivity {
     private ImageButton btn_close;
     private TextView title, content, date;
     Long diaryId;
+    String getTitle, getContent, getDate;
+
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,18 +101,27 @@ public class DetailDiaryActivity extends AppCompatActivity {
 
         try {
             String responseStr = new JSONObject(responseString).getString("result");
-            String getTitle = new JSONObject(responseStr).getString("title");
-            String getContent = new JSONObject(responseStr).getString("content");
-            String getDate = new JSONObject(responseStr).getString("date");
+            getTitle = new JSONObject(responseStr).getString("title");
+            getContent = new JSONObject(responseStr).getString("content");
+            getDate = new JSONObject(responseStr).getString("date");
             getDate = getDate.substring(0, 10);
 
-            title.setText(getTitle);
-            content.setText(getContent);
-            date.setText(getDate);
+            setData();
 
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setData() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                title.setText(getTitle);
+                content.setText(getContent);
+                date.setText(getDate);
+            }
+        });
     }
 
     public void delDiary(Long id) {
