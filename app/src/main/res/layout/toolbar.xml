@@ -7,7 +7,7 @@
     app:menu="@menu/menu">
 
     <ImageButton
-        android:id="@+id/btn_back"
+        android:id="@+id/btn_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
@@ -15,7 +15,7 @@
         android:src="@drawable/ic_btn_close" />
 
     <TextView
-        android:id="@+id/datetime"
+        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

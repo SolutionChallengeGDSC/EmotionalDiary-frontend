@@ -2,40 +2,63 @@ package com.GDSC.emotionaldiary;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-// Todo 감정 점수 세팅 ..
-public class CreateDiaryActivity extends AppCompatActivity {
-    private ImageButton emotional_score_btn, lock, close_btn;
-    EditText title, content;
-    AppCompatButton complete_btn;
-    private static final int RESULT_CREATEDIARY = 1;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+
+public class CreateDiaryActivity extends AppCompatActivity {
+    private ImageButton close_btn, emotional_score_btn, lock;
+    private AppCompatButton complete_btn;
+    private EditText title, content;
+    boolean isUpdate;
+    Long diaryId;
+    String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_diary);
-        Intent getDetailIntent = getIntent();
+
         title = findViewById(R.id.title);
         content = findViewById(R.id.content);
+
+        Intent getIntent = getIntent();
+        isUpdate = getIntent.getBooleanExtra("isUpdate", false);
+        diaryId = getIntent.getLongExtra("diaryId", 0);
+        title.setText(getIntent.getStringExtra("title"));
+        content.setText(getIntent.getStringExtra("content"));
+        date = getIntent.getStringExtra("date");
+
+        // 닫기 버튼
         close_btn = findViewById(R.id.close_btn);
+        close_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        // 완료 버튼
         complete_btn = findViewById(R.id.complete_btn);
-        try{
-            title.setText(getDetailIntent.getStringExtra("title"));
-            content.setText(getDetailIntent.getStringExtra("content"));
-        }catch (NullPointerException e){
-            title.setText("");
-            content.setText("");
-        }
+        complete_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isUpdate) {  // 수정일 때
+                    new Thread(() -> {putDiary(diaryId);}).start();
+                }
+                else {  // 작성일 때
+                    new Thread(() -> {postDiary();}).start();
+                }
+            }
+        });
+
         // 감정 점수 다이얼로그 띄우기
         emotional_score_btn = findViewById(R.id.emotional_score_btn);
         emotional_score_btn.setOnClickListener(new View.OnClickListener() {
@@ -44,24 +67,6 @@ public class CreateDiaryActivity extends AppCompatActivity {
                 EmotionalScoreDialog emotionalScoreDialog = new EmotionalScoreDialog();
                 emotionalScoreDialog.show(getSupportFragmentManager(), "emotional score");
 
-            }
-        });
-        close_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        complete_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CreateDiaryActivity.this, DetailDiaryActivity.class);
-                intent.putExtra("title", title.getText().toString());
-                intent.putExtra("content", content.getText().toString());
-                Toast.makeText(CreateDiaryActivity.this, "complete_btn Clicked", Toast.LENGTH_SHORT).show();
-                Log.e("content", content.getText().toString());
-                setResult(RESULT_CREATEDIARY, intent);
-                finish();
             }
         });
 
@@ -78,9 +83,47 @@ public class CreateDiaryActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-        // 액션바 제거
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.hide();
+    public void putDiary(Long id) {
+        try {
+            String userEmail = "test1@naver.com";  // 임시
+            int score = 55;  // 임시
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://34.64.254.35/diary/"+id;
+            String strBody = String.format("{\"title\" : \"%s\", \"content\" : \"%s\", \"date\" : \"%s\", \"score\" : %d, \"userEmail\" : \"%s\"}", title.getText(), content.getText(), date, score, userEmail);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), strBody);
+            okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).put(requestBody);
+            builder.addHeader("Content-type", "application/json");
+            okhttp3.Request request = builder.build();
+            okhttp3.Response response = client.newCall(request).execute();
+            if(response.isSuccessful()) {
+                response.body().close();
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void postDiary() {
+        try {
+            String userEmail = "test1@naver.com";  // 임시
+            int score = 50;  // 임시
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://34.64.254.35/diary";
+            String strBody = String.format("{\"title\" : \"%s\", \"content\" : \"%s\", \"date\" : \"%s\", \"score\" : %d, \"userEmail\" : \"%s\"}", title.getText(), content.getText(), date, score, userEmail);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), strBody);
+            okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).post(requestBody);
+            builder.addHeader("Content-type", "application/json");
+            okhttp3.Request request = builder.build();
+            okhttp3.Response response = client.newCall(request).execute();
+            if(response.isSuccessful()) {
+                response.body().close();
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

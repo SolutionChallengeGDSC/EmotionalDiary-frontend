@@ -1,74 +1,54 @@
 package com.GDSC.emotionaldiary;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-// Todo 날짜 값을 키 값으로 title, content 값 세팅 : 백엔드 연결
-public class DetailDiaryActivity extends AppCompatActivity {
-    private TextView title, content;
-    String selectedDate;
-    private static final int RESULT_DETAILDIARY = 0;
-    private static final int RESULT_CREATEDIARY = 1;
 
-    ImageButton btn_back;
+import org.json.JSONObject;
+
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+
+public class DetailDiaryActivity extends AppCompatActivity {
+    private ImageButton btn_close;
+    private TextView title, content, date;
+    Long diaryId;
+    String getTitle, getContent, getDate;
+
+    Handler handler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_diary);
 
+        title = findViewById(R.id.title);
+        content = findViewById(R.id.content);
+        date = findViewById(R.id.date);
+        btn_close = findViewById(R.id.btn_close);
         Toolbar toolbar = findViewById (R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        btn_back = findViewById(R.id.btn_back);
+        Intent getIntent = getIntent();
+        diaryId = getIntent.getLongExtra("diaryId", 0);
+        new Thread(() -> {getDiary(diaryId);}).start();
 
-
-        Intent getDetailDiary = getIntent();
-        selectedDate = getDetailDiary.getStringExtra("selectedDate"); // 날짜
-
-        Button.OnClickListener onClickListener = new Button.OnClickListener() {
+        btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (v.getId()){
-                    //첫번째 버튼 행동
-                    case R.id.btn_back:
-                        Intent intent = new Intent();
-                        String resultToMain = "gun";
-                        intent.putExtra("resultToMain",resultToMain);
-                        setResult(RESULT_DETAILDIARY, intent);
-                        finish();
-                        break;
-                    case R.id.modify:
-                        Toast.makeText(DetailDiaryActivity.this, "yup", Toast.LENGTH_SHORT).show();
-                        break;
-                }
+                finish();
             }
-        };
-        btn_back.setOnClickListener(onClickListener);
-
-
+        });
     }
 
     @Override
@@ -81,40 +61,84 @@ public class DetailDiaryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        title = findViewById(R.id.title);
-        content = findViewById(R.id.content);
         switch (item.getItemId()) {
             case R.id.modify:
-                Intent intent = new Intent(DetailDiaryActivity.this, CreateDiaryActivity.class);
-                intent.putExtra("title", title.getText().toString());
-                intent.putExtra("content", content.getText().toString());
-                launcher.launch(intent);
+                finish();
+                Intent createDiaryIntent = new Intent(getApplicationContext(), CreateDiaryActivity.class);
+                createDiaryIntent.putExtra("diaryId", diaryId);
+                createDiaryIntent.putExtra("title", title.getText());
+                createDiaryIntent.putExtra("content", content.getText());
+                createDiaryIntent.putExtra("date", date.getText());
+                createDiaryIntent.putExtra("isUpdate", true);
+                startActivity(createDiaryIntent);
                 return true;
             case R.id.delete:
+                new Thread(() -> {delDiary(diaryId);}).start();
                 return true;
             case R.id.cancel:
                 return true;
         }
         return false;
     }
-    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult> ()
-            {
-                @Override
-                public void onActivityResult(ActivityResult data)
-                {
 
-                    Log.e("TAG", "data : " + data);
-                    if (data.getResultCode() == RESULT_CREATEDIARY) // RESULT_CREATEDIARY = 1
-                    {
-                        Intent intent = data.getData();
-                        String getTitle = intent.getStringExtra ("title");
-                        String getContent = intent.getStringExtra("content");
-                        title.setText(getTitle);
-                        content.setText(getContent);
-                    }
-                }
+    public void getDiary(Long id) {
+        String responseString = null;
+        try {
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://34.64.254.35/diary/"+id;
+            okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).get();
+            builder.addHeader("Content-type", "application/json");
+            okhttp3.Request request = builder.build();
+            okhttp3.Response response = client.newCall(request).execute();
+            if(response.isSuccessful()) {
+                ResponseBody body = response.body();
+                responseString = body.string();
+                body.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            });
+        try {
+            String responseStr = new JSONObject(responseString).getString("result");
+            getTitle = new JSONObject(responseStr).getString("title");
+            getContent = new JSONObject(responseStr).getString("content");
+            getDate = new JSONObject(responseStr).getString("date");
+            getDate = getDate.substring(0, 10);
 
+            setData();
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setData() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                title.setText(getTitle);
+                content.setText(getContent);
+                date.setText(getDate);
+            }
+        });
+    }
+
+    public void delDiary(Long id) {
+        try {
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://34.64.254.35/diary/"+id;
+            okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url).delete();
+            builder.addHeader("Content-type", "application/json");
+            okhttp3.Request request = builder.build();
+            okhttp3.Response response = client.newCall(request).execute();
+            if(response.isSuccessful()) {
+                ResponseBody body = response.body();
+                body.close();
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
