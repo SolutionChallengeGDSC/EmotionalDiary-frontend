@@ -56,11 +56,12 @@ public class LoginActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
-
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        Intent getLogoutIntent = getIntent();
+        if(getLogoutIntent.getBooleanExtra("logout", false)){
+            mGoogleSignInClient.signOut(); // 로그인 초기화
+        } // 로그아웃
 
-        mGoogleSignInClient.signOut(); // 로그인 초기화
 
 
         txt_login.setTypeface(txt_login.getTypeface(), Typeface.ITALIC);
@@ -98,29 +99,29 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject resultGetUserId = jsonGetUserId.getJSONObject("result");
                         userId = resultGetUserId.getInt("id");
                     }
-//                    else if(statusGetUserId == 403){ // 존재하지 않는 유저 -> sign up
-//
-//                        HttpPost userInfo = new HttpPost();
-//                        JSONObject jsonPostSignUp = new JSONObject(); // post json
-//
-//                        jsonPostSignUp.put("email",emailToken);
-//                        jsonPostSignUp.put("nickname", nameToken);
-//                        jsonPostSignUp.put("picture", photoUri);
-//                        String responsePostSignUp = userInfo.post(url,jsonPostSignUp.toString());
-//                        System.out.println("json : "+ jsonPostSignUp);
-//                        Log.e("json_posted", jsonPostSignUp.toString());
-//
-//                        System.out.println(responsePostSignUp);
-//                        Log.e("responsePostSignUp", responsePostSignUp);
-//
-//                        JSONObject jObject = new JSONObject(responsePostSignUp.toString());;
-//                        int statusPost = jObject.getInt("status");
-//                        if(statusPost == 200){ // 새로운 유저 DB 생성
-//                            Log.e("status", Integer.toString(statusPost));
-//                            JSONObject resultPostSignUp = jObject.getJSONObject("result");
-//                            userId = resultPostSignUp.getInt("id"); // user id
-//                        }
-//                    }
+                    else if(statusGetUserId == 403){ // 존재하지 않는 유저 -> sign up
+
+                        HttpClient userInfo = new HttpClient();
+                        JSONObject jsonPostSignUp = new JSONObject(); // post json
+
+                        jsonPostSignUp.put("email",emailToken);
+                        jsonPostSignUp.put("nickname", nameToken);
+                        jsonPostSignUp.put("picture", photoUri);
+                        String responsePostSignUp = userInfo.post(url,jsonPostSignUp.toString());
+                        System.out.println("json : "+ jsonPostSignUp);
+                        Log.e("json_posted", jsonPostSignUp.toString());
+
+                        System.out.println(responsePostSignUp);
+                        Log.e("responsePostSignUp", responsePostSignUp);
+
+                        JSONObject jObject = new JSONObject(responsePostSignUp.toString());;
+                        int statusPost = jObject.getInt("status");
+                        if(statusPost == 200){ // 새로운 유저 DB 생성
+                            Log.e("status", Integer.toString(statusPost));
+                            JSONObject resultPostSignUp = jObject.getJSONObject("result");
+                            userId = resultPostSignUp.getInt("id"); // user id
+                        }
+                    }
                     Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
                     signInIntent.putExtra("userId",userId);
                     signInIntent.putExtra("name", nameToken);
@@ -130,33 +131,6 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
 
 
-
-
-
-//
-//                    if(status == 200){ // 새로운 유저 DB 생성
-//                        Log.e("status", Integer.toString(status));
-//
-//                        JSONObject result = jObject.getJSONObject("result");
-//                        int userId = result.getInt("id"); // user id
-//
-//                        Log.e("userId", Integer.toString(userId));
-//
-//                        Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
-//                        signInIntent.putExtra("name", nameToken);
-//                        signInIntent.putExtra("profileImg",photoUri);
-//                        startActivity(signInIntent);
-//                        finish();
-//                    }
-//                    else if(status == 403){
-//                        // 같은 이메일의 유저 존재
-//                        Log.e("status", Integer.toString(status));
-//                        Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
-//                        signInIntent.putExtra("name", nameToken);
-//                        signInIntent.putExtra("profileImg",photoUri);
-//                        startActivity(signInIntent);
-//                        finish();
-//                    }
                 }catch (IOException e){
                     Log.e("IOException : ", e.getMessage());
                 }catch (JSONException e) {

@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
             info_recommended_movie.setText(tsr.movieProducerArray.get(randomNum_movie));
 
             int randomNum_musicImg = (int) (Math.random() * musicImgList.length);
-            img_recommended_music.setImageResource((Integer) movieImgList[randomNum_musicImg]);
+            img_recommended_music.setImageResource((Integer) musicImgList[randomNum_musicImg]);
 
             int randomNum_movieImg = (int) (Math.random() * movieImgList.length);
             img_recommended_movie.setImageResource((Integer) movieImgList[randomNum_movieImg]);
@@ -504,10 +504,17 @@ public class MainActivity extends AppCompatActivity {
 
                 for(int i = 0; i< t1.testJArray.length(); i++){
                     try{
-                        TodoItem_Item todoItem = new TodoItem_Item(t1.testJArray.getJSONObject(i).getString("goal"));
-                        todoItem.setCheked(t1.testJArray.getJSONObject(i).getBoolean("success"));
-                        todoItem.setId(t1.testJArray.getJSONObject(i).getInt("id"));
-                        mtodoItems.add(todoItem);
+                        if(t1.testJArray.getJSONObject(i).getBoolean("recommend")){
+                            txt_recommended_todo.setText(t1.testJArray.getJSONObject(i).getString("goal"));
+                            txt_recommended_todo_complete.setText(t1.testJArray.getJSONObject(i).getString("goal"));
+                            isCompleteRecommendedTodo = t1.testJArray.getJSONObject(i).getBoolean("success");
+                        }
+                        else{
+                            TodoItem_Item todoItem = new TodoItem_Item(t1.testJArray.getJSONObject(i).getString("goal"));
+                            todoItem.setCheked(t1.testJArray.getJSONObject(i).getBoolean("success"));
+                            todoItem.setId(t1.testJArray.getJSONObject(i).getInt("id"));
+                            mtodoItems.add(todoItem);
+                        }
                     }catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -732,7 +739,7 @@ public class MainActivity extends AppCompatActivity {
                             String selectedDateForPost = selectedTodoDate+"T00:00:00";
                             JSONObject jsonMakeTodo = new JSONObject();
                             jsonMakeTodo.put("goal",writeContents.getText().toString());
-                            jsonMakeTodo.put("category", "category2"); // 임시
+                            jsonMakeTodo.put("category", "category"); // 임시
                             jsonMakeTodo.put("userEmail","test1@naver.com"); // 임시
                             jsonMakeTodo.put("goalTime",selectedDateForPost);
                             String responseMakeTodo = makeTodo.post(urlMakeTodo,jsonMakeTodo.toString());
@@ -755,7 +762,7 @@ public class MainActivity extends AppCompatActivity {
                             String urlChangeCategory = "http://34.64.254.35/todo/category/2"; // 1 : 임시(id)
                             HttpClient ChangeCategory = new HttpClient(); // Make Todo Post
                             JSONObject jsonChangeCategory = new JSONObject();
-                            jsonChangeCategory.put("category",txt_category.getText().toString());
+                            jsonChangeCategory.put("category","category");
 
                             String responseChangeCategory = ChangeCategory.put(urlChangeCategory,jsonChangeCategory.toString());
                             Log.e("json_posted changeCate",jsonChangeCategory.toString());
@@ -969,6 +976,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent logOutIntent = new Intent(MainActivity.this, LoginActivity.class);
+                logOutIntent.putExtra("logout",true);
                 alertDialog.dismiss();
                 startActivity(logOutIntent);
                 finish();
