@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFF">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -285,19 +286,21 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:layout_marginTop="8dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_gravity="center"
                                 tools:ignore="InvalidId">
                                 <androidx.cardview.widget.CardView
-                                    android:layout_width="76dp"
-                                    android:layout_height="76dp"
-                                    app:cardCornerRadius="12dp"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:layout_marginTop="4dp"
+                                    app:cardCornerRadius="6dp"
                                     app:cardElevation="0dp"
                                     >
                                     <ImageView
                                         android:id="@+id/img_recommended_music"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:src="@drawable/main_img_music1"
+                                        android:src="@drawable/music"
                                         android:layout_gravity="center"
                                         android:scaleType="centerCrop"
                                         />
@@ -374,8 +377,8 @@
                                 android:layout_marginTop="8dp"
                                 >
                                 <androidx.cardview.widget.CardView
-                                    android:layout_width="76dp"
-                                    android:layout_height="76dp"
+                                    android:layout_width="62dp"
+                                    android:layout_height="62dp"
                                     app:cardCornerRadius="12dp"
                                     app:cardElevation="0dp"
                                     >
@@ -383,7 +386,7 @@
                                         android:id="@+id/img_recommended_movie"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:src="@drawable/ddaeng"
+                                        android:src="@drawable/movie"
                                         android:layout_gravity="center"
                                         android:scaleType="centerCrop"
                                         />

@@ -270,10 +270,10 @@ public class MainActivity extends AppCompatActivity {
             info_recommended_movie.setText(tsr.movieProducerArray.get(randomNum_movie));
 
             int randomNum_musicImg = (int) (Math.random() * musicImgList.length);
-            img_recommended_music.setImageResource((Integer) musicImgList[randomNum_musicImg]);
+//            img_recommended_music.setImageResource((Integer) musicImgList[randomNum_musicImg]);
 
             int randomNum_movieImg = (int) (Math.random() * movieImgList.length);
-            img_recommended_movie.setImageResource((Integer) movieImgList[randomNum_movieImg]);
+//            img_recommended_movie.setImageResource((Integer) movieImgList[randomNum_movieImg]);
         }
         else{
             layout_recommended_music.setVisibility(View.GONE);
@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int randomNum_music = (int) (Math.random() * tsr.musicJsonArray.length());
                 int randomNum_musicImg = (int) (Math.random() * musicImgList.length);
-                img_recommended_music.setImageResource((Integer) musicImgList[randomNum_musicImg]);
+//                img_recommended_music.setImageResource((Integer) musicImgList[randomNum_musicImg]);
                 title_recommended_music.setText(tsr.songTitleArray.get(randomNum_music));
                 info_recommended_music.setText(tsr.songProducerArray.get(randomNum_music));
             }
@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int randomNum_movie = (int) (Math.random() * tsr.movieJsonArray.length());
                 int randomNum_movieImg = (int) (Math.random() * movieImgList.length);
-                img_recommended_movie.setImageResource((Integer) movieImgList[randomNum_movieImg]);
+//                img_recommended_movie.setImageResource((Integer) movieImgList[randomNum_movieImg]);
                 title_recommended_movie.setText(tsr.movieTitleArray.get(randomNum_movie));
                 info_recommended_movie.setText(tsr.movieProducerArray.get(randomNum_movie));
             }
@@ -469,7 +469,7 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject jsonSearchTodo = new JSONObject();
                                 jsonSearchTodo.put("startTime",selectedDateForPost);
                                 jsonSearchTodo.put("endTime", selectedEndDateForPost);
-                                jsonSearchTodo.put("userEmail","test1@naver.com"); // 임시
+                                jsonSearchTodo.put("userEmail",userEmail);
                                 JSONArray categories = new JSONArray();
                                 jsonSearchTodo.putOpt("categories",categories);
                                 String responseSearchTodo = searchTodo.post(urlSearchTodo,jsonSearchTodo.toString());
@@ -743,7 +743,7 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jsonMakeTodo = new JSONObject();
                             jsonMakeTodo.put("goal",writeContents.getText().toString());
                             jsonMakeTodo.put("category", "category"); // 임시
-                            jsonMakeTodo.put("userEmail","test1@naver.com"); // 임시
+                            jsonMakeTodo.put("userEmail",userEmail);
                             jsonMakeTodo.put("goalTime",selectedDateForPost);
                             String responseMakeTodo = makeTodo.post(urlMakeTodo,jsonMakeTodo.toString());
                             Log.e("json_posted",jsonMakeTodo.toString());
@@ -762,7 +762,7 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     synchronized (this) {
                         try{
-                            String urlChangeCategory = "http://34.64.254.35/todo/category/2"; // 1 : 임시(id)
+                            String urlChangeCategory = "http://34.64.254.35/todo/category/"+userId;
                             HttpClient ChangeCategory = new HttpClient(); // Make Todo Post
                             JSONObject jsonChangeCategory = new JSONObject();
                             jsonChangeCategory.put("category","category");

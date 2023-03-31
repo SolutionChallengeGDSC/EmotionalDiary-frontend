@@ -136,7 +136,6 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(signInIntent);
                     finish();
 
-
                 }catch (IOException e){
                     Log.e("IOException : ", e.getMessage());
                 }catch (JSONException e) {
