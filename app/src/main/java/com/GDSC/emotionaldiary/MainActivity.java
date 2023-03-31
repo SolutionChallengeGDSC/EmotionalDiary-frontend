@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     String selectedTodoDate;
     String selectedEndDate;
+    boolean recommendSet = false;
 
 
     /*------------------------------------------Side Menu, User Info------------------------------------------ */
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     AppCompatImageView btn_check_recommended_todo;
     TextView txt_recommended_todo;
     TextView txt_recommended_todo_complete;
-    /*------------------------------------------Main------------------------------------------ */
+    /*------------------------------------------ Main ------------------------------------------ */
 
 
     /*------------------------------------------ onCreate ------------------------------------------ */
@@ -170,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         txt_recommend_not_yet = findViewById(R.id.txt_recommend_not_yet);
 
         layout_recommended_todo = findViewById(R.id.layout_recommended_todo);
+        layout_recommended_todo.setVisibility(View.GONE);
         btn_check_recommended_todo = findViewById(R.id.btn_check_recommended_todo);
         txt_recommended_todo = findViewById(R.id.txt_recommended_todo);
         txt_recommended_todo_complete = findViewById(R.id.txt_recommended_todo_complete);
@@ -430,6 +432,8 @@ public class MainActivity extends AppCompatActivity {
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 // 선택한 날짜의 년, 월, 일 값
                 int year = date.getYear();
+                recommendSet = false;
+
                 Integer month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더함.
                 Integer day = date.getDay();
                 selectedTodoDate = year + "-" + ((month).toString().length()==1 ? "0"+(month):(month).toString()) + "-" + ((day).toString().length()==1 ? "0"+(day):(day).toString());
@@ -504,6 +508,8 @@ public class MainActivity extends AppCompatActivity {
                 for(int i = 0; i< t1.testJArray.length(); i++){
                     try{
                         if(t1.testJArray.getJSONObject(i).getBoolean("recommend")){
+                            recommendSet = true;
+                            layout_recommended_todo.setVisibility(View.VISIBLE);
                             txt_recommended_todo.setText(t1.testJArray.getJSONObject(i).getString("goal"));
                             txt_recommended_todo_complete.setText(t1.testJArray.getJSONObject(i).getString("goal"));
                             isCompleteRecommendedTodo = t1.testJArray.getJSONObject(i).getBoolean("success");
@@ -519,6 +525,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 mRecyclerAdapter.setmTodoList(mtodoItems);
+                if(!recommendSet){
+                    layout_recommended_todo.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -660,12 +669,12 @@ public class MainActivity extends AppCompatActivity {
     /* 선택된 요일의 background를 설정하는 Decorator 클래스 (Calendar_Diary) */
     private static class DayDecorator_Diary implements DayViewDecorator{
         private final Drawable drawable_diary;
-        private final Drawable drawable_all;
+//        private final Drawable drawable_all;
 
 
         public DayDecorator_Diary(Context context){
             drawable_diary = ContextCompat.getDrawable(context, R.drawable.calendar_selector);
-            drawable_all = ContextCompat.getDrawable(context, R.drawable.calendar_day_default);
+//            drawable_all = ContextCompat.getDrawable(context, R.drawable.calendar_day_default);
         }
         public boolean shouldDecorate(CalendarDay day) {
             return true;
@@ -674,7 +683,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void decorate(DayViewFacade view) {
             view.setSelectionDrawable(drawable_diary);
-            view.setBackgroundDrawable(drawable_all);
+//            view.setBackgroundDrawable(drawable_all);
+            view.addSpan(new ForegroundColorSpan(0xFF92BF85));   // 달력 안의 모든 숫자
+
             // 달력 안의 모든 숫자
         }
 
@@ -990,8 +1001,6 @@ public class MainActivity extends AppCompatActivity {
                     {
                         Intent intent = data.getData();
                         String result = intent.getStringExtra ("resultToMain");
-
-                        Toast.makeText(MainActivity.this, "result from detail : " + result, Toast.LENGTH_SHORT).show();
                     }
                 }
             });

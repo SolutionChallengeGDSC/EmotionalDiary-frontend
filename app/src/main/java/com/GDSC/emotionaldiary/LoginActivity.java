@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
             nameToken = account.getGivenName();
             emailToken = account.getEmail();
             Uri photoUri = account.getPhotoUrl();
-            Picasso.get().load(photoUri).into(logo_login);
             String url = "http://34.64.254.35/user/sign-up";
             String urlGetUserid = "http://34.64.254.35/user?email=" + emailToken; // get UserId
 
@@ -165,15 +163,11 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
             updateUI(account);
         } catch (ApiException e) {
-            Toast.makeText(this, "handleSignInResult fail " + "signInResult:failed code=" + e, Toast.LENGTH_SHORT).show();
             Log.e("handleSignInResult fail", e.getMessage());
             updateUI(null);
         }
     }
-
-
 
 }
