@@ -106,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout main_mode_diary;
     ImageView img_recommended_music;
     ImageView img_recommended_movie;
-    AppCompatImageView btn_add_category;
     AppCompatImageView refresh_recommended_music;
     AppCompatImageView refresh_recommended_movie;
     LinearLayout recommended_music;
@@ -551,7 +550,6 @@ public class MainActivity extends AppCompatActivity {
 
         todo_category = (LinearLayout) findViewById(R.id.todo_category);
         txt_todo_category = findViewById(R.id.txt_todo_category);
-        btn_add_category = findViewById(R.id.btn_add_category);
 
 
         todo_category.setOnClickListener(new View.OnClickListener() {
@@ -564,13 +562,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerAdapter.setmTodoList(mtodoItems);
 
-        // Todo 카테고리 추가 버튼
-        btn_add_category.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "여깁니다 !", Toast.LENGTH_SHORT).show();
-            }
-        });
+
 
 
         /*-------------------------------------------Main------------------------------------------*/
