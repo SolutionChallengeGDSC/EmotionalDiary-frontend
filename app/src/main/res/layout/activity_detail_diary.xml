@@ -36,7 +36,7 @@
         android:layout_height="8dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="300dp"
         android:background="@drawable/emotional_score"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/public_or_private" />
@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
-        android:hint="75"
+        android:hint="24"
         android:textColor="@color/dark_gray"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@id/emotional_score"
