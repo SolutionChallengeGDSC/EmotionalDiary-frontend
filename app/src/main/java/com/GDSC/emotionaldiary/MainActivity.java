@@ -999,7 +999,6 @@ public class MainActivity extends AppCompatActivity {
     public void getDiary(String date) {
         String responseString = null;
         try {
-            userEmail = "test1@naver.com";  // 임시
             OkHttpClient client = new OkHttpClient();
             String url = "http://34.64.254.35/diary/list";
             String strBody = String.format("{\"date\" : \"%s\", \"userEmail\" : \"%s\"}", date, userEmail);
@@ -1025,6 +1024,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent createDiaryIntent = new Intent(getApplicationContext(), CreateDiaryActivity.class);
                 createDiaryIntent.putExtra("isUpdate", false);
                 createDiaryIntent.putExtra("date", date);
+                createDiaryIntent.putExtra("userEmail", userEmail);
                 startActivity(createDiaryIntent);
             }
             else {
