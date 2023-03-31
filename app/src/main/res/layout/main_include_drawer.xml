@@ -57,7 +57,7 @@
                         app:civ_border_overlay="true"
                         app:civ_border_width="1dp"
                         app:civ_border_color="#ffffff"
-                        android:src="@drawable/ddaeng"
+                        android:src="@drawable/dongwon_logo"
                         />
                     <TextView
                         android:id="@+id/txt_side_menu_userId"
