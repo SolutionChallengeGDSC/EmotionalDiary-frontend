@@ -16,7 +16,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="20dp"
         android:background="@null"
-        android:hint="제목"
+        android:hint="Title"
         android:maxLength="28"
         android:textSize="14sp"
         android:textStyle="bold"
@@ -43,7 +43,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="20dp"
         android:background="@null"
-        android:hint="오늘은 어떤 하루를 보내셨나요?"
+        android:hint="How was your day today?"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/line" />
