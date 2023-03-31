@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 synchronized (this) {
                     try{
                         HttpClient settingRecommend = new HttpClient(); // search Todo Post
-                        String urlSettingRecommend = "http://34.64.254.35/user/1/recommend";
+                        String urlSettingRecommend = "http://34.64.254.35/user/"+userId+"/recommend";
 
 
                         String responseSettingRecommend = settingRecommend.get(urlSettingRecommend);

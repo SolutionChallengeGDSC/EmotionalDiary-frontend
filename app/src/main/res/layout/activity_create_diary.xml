@@ -39,11 +39,12 @@
     <EditText
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="560dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="20dp"
         android:background="@null"
+        android:gravity="top"
         android:hint="How was your day today?"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
