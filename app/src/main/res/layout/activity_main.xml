@@ -122,31 +122,13 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             >
-                            <LinearLayout
-                                android:layout_width="match_parent"
+                            <TextView
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Todo"
-                                    android:textSize="20dp"
-                                    android:textColor="@color/black"
-                                    />
-                                <Space
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    />
-                                <androidx.appcompat.widget.AppCompatImageView
-                                    android:id="@+id/btn_add_category"
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:adjustViewBounds="true"
-                                    app:srcCompat="@drawable/ic_add_todo"
-                                    android:layout_gravity="center|left"
-                                    />
-                            </LinearLayout>
+                                android:text="Todo"
+                                android:textSize="20dp"
+                                android:textColor="@color/black"
+                                />
 
                             <LinearLayout
                                 android:id="@+id/todo_category"
@@ -166,7 +148,7 @@
                                     android:id = "@+id/txt_todo_category"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Categ1"
+                                    android:text="Add Todo"
                                     android:layout_gravity="center"
                                     android:textColor="@color/black"
                                     />
@@ -232,7 +214,7 @@
                                         android:layout_weight="9"
                                         android:layout_marginStart="8dp"
                                         android:text="Todo1"
-                                        android:textSize="28dp"
+                                        android:textSize="16dp"
                                         android:visibility="visible"
                                         android:layout_gravity="center"
                                         android:textColor="@color/black"
@@ -244,7 +226,7 @@
                                         android:layout_weight="9"
                                         android:layout_marginStart="8dp"
                                         android:text="Todo1"
-                                        android:textSize="28dp"
+                                        android:textSize="16dp"
                                         android:visibility="gone"
                                         android:layout_gravity="center"
                                         android:textColor="#808080"
@@ -342,7 +324,10 @@
                                         android:layout_height="wrap_content"
                                         android:text="Title"
                                         android:textSize="20dp"
-                                        android:textColor="@color/black"/>
+                                        android:textColor="@color/black"
+                                        android:ems="9"
+                                        android:maxLines="1"
+                                        android:ellipsize="end"/>
                                     <TextView
                                         android:id="@+id/info_recommended_music"
                                         android:layout_width="wrap_content"
