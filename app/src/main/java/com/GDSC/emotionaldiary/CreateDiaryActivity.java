@@ -1,6 +1,7 @@
 package com.GDSC.emotionaldiary;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -35,7 +36,12 @@ public class CreateDiaryActivity extends AppCompatActivity {
         title.setText(getIntent.getStringExtra("title"));
         content.setText(getIntent.getStringExtra("content"));
         date = getIntent.getStringExtra("date");
-        userEmail = getIntent.getStringExtra("userEmail");
+
+        // 프레퍼런스로 userEmail 읽어오기
+        if(savedInstanceState == null) {
+            SharedPreferences prefs = getSharedPreferences("user_info", 0);
+            userEmail = prefs.getString("userEmail", "");
+        }
 
         // 닫기 버튼
         close_btn = findViewById(R.id.close_btn);

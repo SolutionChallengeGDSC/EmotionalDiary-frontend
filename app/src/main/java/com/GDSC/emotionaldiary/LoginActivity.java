@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -122,6 +123,13 @@ public class LoginActivity extends AppCompatActivity {
                             userId = resultPostSignUp.getInt("id"); // user id
                         }
                     }
+
+                    // 프레퍼런스로 userEmail 저장
+                    SharedPreferences prefs = getSharedPreferences("user_info", 0);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("userEmail", emailToken);
+                    editor.apply();
+
                     Intent signInIntent = new Intent(LoginActivity.this, MainActivity.class);
                     signInIntent.putExtra("userId",userId);
                     signInIntent.putExtra("name", nameToken);
