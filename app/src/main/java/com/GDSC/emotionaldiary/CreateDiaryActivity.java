@@ -19,7 +19,7 @@ public class CreateDiaryActivity extends AppCompatActivity {
     private EditText title, content;
     boolean isUpdate;
     Long diaryId;
-    String date;
+    String date, userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,7 @@ public class CreateDiaryActivity extends AppCompatActivity {
         title.setText(getIntent.getStringExtra("title"));
         content.setText(getIntent.getStringExtra("content"));
         date = getIntent.getStringExtra("date");
+        userEmail = getIntent.getStringExtra("userEmail");
 
         // 닫기 버튼
         close_btn = findViewById(R.id.close_btn);
@@ -87,7 +88,6 @@ public class CreateDiaryActivity extends AppCompatActivity {
 
     public void putDiary(Long id) {
         try {
-            String userEmail = "test1@naver.com";  // 임시
             int score = 55;  // 임시
             OkHttpClient client = new OkHttpClient();
             String url = "http://34.64.254.35/diary/"+id;
@@ -108,7 +108,6 @@ public class CreateDiaryActivity extends AppCompatActivity {
 
     public void postDiary() {
         try {
-            String userEmail = "test1@naver.com";  // 임시
             int score = 50;  // 임시
             OkHttpClient client = new OkHttpClient();
             String url = "http://34.64.254.35/diary";
