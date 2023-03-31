@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.e("status", Integer.toString(statusGetUserId));
                         JSONObject resultGetUserId = jsonGetUserId.getJSONObject("result");
                         userId = resultGetUserId.getInt("id");
+                        Log.e("userId",userId+"");
                     }
                     else if(statusGetUserId == 403){ // 존재하지 않는 유저 -> sign up
 

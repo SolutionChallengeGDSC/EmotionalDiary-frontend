@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     CircleImageView img_side_menu_userImg;
     TextView txt_side_menu_userId;
     Uri userProfileImg;
-    int userId = 0; // 임시 값, 추후 수정
+    int userId; // 임시 값, 추후 수정
     String userEmail;
 
     private static final int RESULT_DETAILDIARY = 0; // 임시 값
@@ -179,9 +179,23 @@ public class MainActivity extends AppCompatActivity {
         txt_recommended_todo_complete.setTypeface(null, Typeface.ITALIC);
 
         isChecked = false;
+        Intent logInIntent = getIntent();
 
 
-        /*-------------------------------------------Setting Recommend------------------------------------------*/
+        mainDrawerLayout = findViewById(R.id.main_drawer_layout);
+        openMenuButton = findViewById(R.id.ic_menu);
+
+        main_navigation_txt_logout = findViewById(R.id.main_navigation_txt_logout);
+        img_side_menu_userImg = findViewById(R.id.img_side_menu_userImg);
+        txt_side_menu_userId = findViewById(R.id.txt_side_menu_userId);
+        main_navigation_txt_setting_pw = findViewById(R.id.main_navigation_txt_setting_pw);
+
+        userProfileImg = logInIntent.getParcelableExtra("profileImg");
+        String userProfileName = logInIntent.getStringExtra("name");
+        userId = logInIntent.getIntExtra("userId",0);
+        userEmail = logInIntent.getStringExtra("userEmail");
+
+        /*------------------------------------------- Setting Recommend ------------------------------------------*/
 
         Object[] musicImgList = {R.drawable.main_img_music1,R.drawable.main_img_music2,R.drawable.main_img_music3,R.drawable.main_img_music4,R.drawable.main_img_music5,R.drawable.main_img_music6,R.drawable.main_img_music7};
         Object[] movieImgList = {R.drawable.main_img_movie1,R.drawable.main_img_movie2,R.drawable.main_img_movie3,R.drawable.main_img_movie4,R.drawable.main_img_movie5,R.drawable.main_img_movie6,R.drawable.main_img_movie7};
@@ -200,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
                     try{
                         HttpClient settingRecommend = new HttpClient(); // search Todo Post
                         String urlSettingRecommend = "http://34.64.254.35/user/"+userId+"/recommend";
+                        Log.e("userId",userId+"");
 
 
                         String responseSettingRecommend = settingRecommend.get(urlSettingRecommend);
@@ -579,21 +594,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*------------------------------------------ feature : Side Menu ------------------------------------------ */
 
-        Intent logInIntent = getIntent();
 
-
-        mainDrawerLayout = findViewById(R.id.main_drawer_layout);
-        openMenuButton = findViewById(R.id.ic_menu);
-
-        main_navigation_txt_logout = findViewById(R.id.main_navigation_txt_logout);
-        img_side_menu_userImg = findViewById(R.id.img_side_menu_userImg);
-        txt_side_menu_userId = findViewById(R.id.txt_side_menu_userId);
-        main_navigation_txt_setting_pw = findViewById(R.id.main_navigation_txt_setting_pw);
-
-        userProfileImg = logInIntent.getParcelableExtra("profileImg");
-        String userProfileName = logInIntent.getStringExtra("name");
-        userId = logInIntent.getIntExtra("userId",0);
-        userEmail = logInIntent.getStringExtra("userEmail");
         if(!TextUtils.isEmpty(userProfileName)){
             txt_side_menu_userId.setText(userProfileName);
             Picasso.get().load(userProfileImg).into(img_side_menu_userImg);
