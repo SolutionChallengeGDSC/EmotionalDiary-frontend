@@ -94,7 +94,7 @@ public class CreateDiaryActivity extends AppCompatActivity {
 
     public void putDiary(Long id) {
         try {
-            int score = 55;  // 임시
+            int score = 24;  // 임시
             OkHttpClient client = new OkHttpClient();
             String url = "http://34.64.254.35/diary/"+id;
             String strBody = String.format("{\"title\" : \"%s\", \"content\" : \"%s\", \"date\" : \"%s\", \"score\" : %d, \"userEmail\" : \"%s\"}", title.getText(), content.getText(), date, score, userEmail);
@@ -114,7 +114,7 @@ public class CreateDiaryActivity extends AppCompatActivity {
 
     public void postDiary() {
         try {
-            int score = 50;  // 임시
+            int score = 24;  // 임시
             OkHttpClient client = new OkHttpClient();
             String url = "http://34.64.254.35/diary";
             String strBody = String.format("{\"title\" : \"%s\", \"content\" : \"%s\", \"date\" : \"%s\", \"score\" : %d, \"userEmail\" : \"%s\"}", title.getText(), content.getText(), date, score, userEmail);
