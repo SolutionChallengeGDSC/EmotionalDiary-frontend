@@ -100,30 +100,29 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject resultGetUserId = jsonGetUserId.getJSONObject("result");
                         userId = resultGetUserId.getInt("id");
                     }
+                    else if(statusGetUserId == 403){ // 존재하지 않는 유저 -> sign up
 
-//                    else if(statusGetUserId == 403){ // 존재하지 않는 유저 -> sign up
-//
-//                        HttpPost userInfo = new HttpPost();
-//                        JSONObject jsonPostSignUp = new JSONObject(); // post json
-//
-//                        jsonPostSignUp.put("email",emailToken);
-//                        jsonPostSignUp.put("nickname", nameToken);
-//                        jsonPostSignUp.put("picture", photoUri);
-//                        String responsePostSignUp = userInfo.post(url,jsonPostSignUp.toString());
-//                        System.out.println("json : "+ jsonPostSignUp);
-//                        Log.e("json_posted", jsonPostSignUp.toString());
-//
-//                        System.out.println(responsePostSignUp);
-//                        Log.e("responsePostSignUp", responsePostSignUp);
-//
-//                        JSONObject jObject = new JSONObject(responsePostSignUp.toString());;
-//                        int statusPost = jObject.getInt("status");
-//                        if(statusPost == 200){ // 새로운 유저 DB 생성
-//                            Log.e("status", Integer.toString(statusPost));
-//                            JSONObject resultPostSignUp = jObject.getJSONObject("result");
-//                            userId = resultPostSignUp.getInt("id"); // user id
-//                        }
-//                    }
+                        HttpClient userInfo = new HttpClient();
+                        JSONObject jsonPostSignUp = new JSONObject(); // post json
+
+                        jsonPostSignUp.put("email",emailToken);
+                        jsonPostSignUp.put("nickname", nameToken);
+                        jsonPostSignUp.put("picture", photoUri);
+                        String responsePostSignUp = userInfo.post(url,jsonPostSignUp.toString());
+                        System.out.println("json : "+ jsonPostSignUp);
+                        Log.e("json_posted", jsonPostSignUp.toString());
+
+                        System.out.println(responsePostSignUp);
+                        Log.e("responsePostSignUp", responsePostSignUp);
+
+                        JSONObject jObject = new JSONObject(responsePostSignUp.toString());;
+                        int statusPost = jObject.getInt("status");
+                        if(statusPost == 200){ // 새로운 유저 DB 생성
+                            Log.e("status", Integer.toString(statusPost));
+                            JSONObject resultPostSignUp = jObject.getJSONObject("result");
+                            userId = resultPostSignUp.getInt("id"); // user id
+                        }
+                    }
 
                     // 프레퍼런스로 userEmail 저장
                     SharedPreferences prefs = getSharedPreferences("user_info", 0);
@@ -138,6 +137,7 @@ public class LoginActivity extends AppCompatActivity {
                     signInIntent.putExtra("userEmail",emailToken);
                     startActivity(signInIntent);
                     finish();
+
 
                 }catch (IOException e){
                     Log.e("IOException : ", e.getMessage());
