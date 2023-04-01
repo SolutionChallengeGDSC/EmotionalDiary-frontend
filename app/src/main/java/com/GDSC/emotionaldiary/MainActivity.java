@@ -57,7 +57,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicReference;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -678,6 +677,7 @@ public class MainActivity extends AppCompatActivity {
 //            drawable_all = ContextCompat.getDrawable(context, R.drawable.calendar_day_default);
         }
         public boolean shouldDecorate(CalendarDay day) {
+            Log.e("day", day.toString());
             return true;
         }
 
