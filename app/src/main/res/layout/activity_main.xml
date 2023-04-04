@@ -1,18 +1,459 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFF">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints"
+            android:orientation="vertical"
+            android:layout_marginTop="4dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingEnd="8dp"
+                android:paddingStart="12dp"
+                >
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ic_menu"
+                    android:layout_width="27dp"
+                    android:layout_height="30dp"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/main_side_menu"
+                    android:layout_gravity="center"
+                    />
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+                <RelativeLayout
+                    android:layout_width="118dp"
+                    android:layout_height="45dp"
+                    android:orientation="horizontal"
+                    android:layout_marginRight="8dp"
+                    >
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_change_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:checked="false"
+                        android:thumb="@drawable/main_thumb_selector"
+                        app:switchMinWidth="118dp"
+                        app:track="@drawable/main_track_selector"
+                        />
+                    <TextView
+                        android:id="@+id/txt_mode_Diary"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center|end"
+                        android:paddingEnd="12dp"
+                        android:text="Diary"
+                        android:textColor="@color/white"
+                        android:textSize="16dp"
+                        android:visibility="visible" />
+                    <TextView
+                        android:id="@+id/txt_mode_Todo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center|start"
+                        android:paddingStart="12dp"
+                        android:text="Todo"
+                        android:textColor="@color/white"
+                        android:textSize="16dp"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <!-- Calender 및 Main -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+                <RelativeLayout
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    >
+                    <!-- Mode_Todo -->
+                    <LinearLayout
+                        android:id="@+id/main_mode_todo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="vertical"
+                        >
+
+                        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                            android:id="@+id/calendarview_todo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/CalenderViewCustom"
+                            app:mcv_weekDayTextAppearance="@style/CalenderViewWeekCustomText"
+                            app:mcv_dateTextAppearance="@style/CalenderViewDateCustomText"
+                            />
+
+
+                        <LinearLayout
+                            android:id="@+id/list_todo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            >
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Todo"
+                                android:textSize="20dp"
+                                android:textColor="@color/black"
+                                />
+
+                            <LinearLayout
+                                android:id="@+id/todo_category"
+                                android:layout_width="120dp"
+                                android:layout_height="32dp"
+                                android:orientation="horizontal"
+                                android:background="@drawable/btn_round_2"
+                                android:backgroundTint="#C2DBBA"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                tools:ignore="MissingConstraints"
+                                >
+                                <TextView
+                                    android:id = "@+id/txt_todo_category"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Add Todo"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/black"
+                                    />
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:layout_weight = "1"/>
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:adjustViewBounds="true"
+                                    app:srcCompat="@drawable/ic_add_todo"
+                                    android:layout_gravity="center|right"
+                                    />
+                            </LinearLayout>
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerView_TodoItem"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5px"
+                                android:background="#C5DEDA"
+                                android:layout_marginTop="8dp"
+                                />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:orientation="vertical"
+                                >
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Recommended Todo"
+                                    android:textSize="20dp"
+                                    android:textColor="@color/black"
+                                    />
+                                <LinearLayout
+                                    android:id="@+id/layout_recommended_todo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:layout_marginTop="12dp"
+                                    android:weightSum="12"
+                                    >
+                                    <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/btn_check_recommended_todo"
+                                        android:layout_width="0dp"
+                                        android:layout_height="28dp"
+                                        android:layout_weight="2"
+                                        android:adjustViewBounds="true"
+                                        app:srcCompat="@drawable/selector_todo_check"
+                                        android:layout_gravity="center"
+                                        />
+                                    <TextView
+                                        android:id="@+id/txt_recommended_todo"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="9"
+                                        android:layout_marginStart="8dp"
+                                        android:text="Todo1"
+                                        android:textSize="16dp"
+                                        android:visibility="visible"
+                                        android:layout_gravity="center"
+                                        android:textColor="@color/black"
+                                        />
+                                    <TextView
+                                        android:id="@+id/txt_recommended_todo_complete"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="9"
+                                        android:layout_marginStart="8dp"
+                                        android:text="Todo1"
+                                        android:textSize="16dp"
+                                        android:visibility="gone"
+                                        android:layout_gravity="center"
+                                        android:textColor="#808080"
+                                        />
+
+                                    <!-- 지우거나 새로고침으로 바꾸거나 -->
+
+                                </LinearLayout>
+                            </LinearLayout>
+                            <!-- 바닥과의 간격을 위해. -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:orientation="horizontal">
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Mode_Diary -->
+                    <LinearLayout
+                        android:id="@+id/main_mode_diary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="vertical">
+
+                        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                            android:id="@+id/calendarview_diary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/CalenderViewCustom"
+                            app:mcv_weekDayTextAppearance="@style/CalenderViewWeekCustomText_Diary"
+                            app:mcv_dateTextAppearance="@style/CalenderViewDateCustomText_Diary"
+                            />
+
+                        <LinearLayout
+                            android:id="@+id/layout_recommended_music"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="16dp"
+                            >
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Recommended Music"
+                                android:textSize="20dp"
+                                android:textColor="#4B4B4B"
+                                />
+                            <LinearLayout
+                                android:id="@+id/recommended_music"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="20dp"
+                                android:layout_gravity="center"
+                                tools:ignore="InvalidId">
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:layout_marginTop="4dp"
+                                    app:cardCornerRadius="6dp"
+                                    app:cardElevation="0dp"
+                                    >
+                                    <ImageView
+                                        android:id="@+id/img_recommended_music"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:src="@drawable/music"
+                                        android:layout_gravity="center"
+                                        android:scaleType="centerCrop"
+                                        />
+                                </androidx.cardview.widget.CardView>
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:layout_marginStart="16dp"
+                                    android:orientation="vertical"
+                                    >
+                                    <TextView
+                                        android:id="@+id/title_recommended_music"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Title"
+                                        android:textSize="20dp"
+                                        android:textColor="@color/black"
+                                        android:ems="9"
+                                        android:maxLines="1"
+                                        android:ellipsize="end"/>
+                                    <TextView
+                                        android:id="@+id/info_recommended_music"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:text="Artist / Album"
+                                        android:textSize="16dp"
+                                        android:textColor="@color/black"/>
+                                </LinearLayout>
+                                <Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"/>
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/refresh_recommended_music"
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:adjustViewBounds="true"
+                                    app:srcCompat="@drawable/main_ic_refresh"
+                                    android:layout_gravity="center"
+                                    />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+                        <View
+                            android:id="@+id/line_recommend"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5px"
+                            android:background="#C5DEDA"
+                            android:layout_marginTop="8dp"
+                            />
+                        <LinearLayout
+                            android:id="@+id/layout_recommended_movie"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="16dp"
+                            >
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Recommended Movie"
+                                android:textSize="20dp"
+                                android:textColor="#4B4B4B"
+                                />
+                            <LinearLayout
+                                android:id="@+id/recommended_movie"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="8dp"
+                                >
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="62dp"
+                                    android:layout_height="62dp"
+                                    app:cardCornerRadius="12dp"
+                                    app:cardElevation="0dp"
+                                    >
+                                    <ImageView
+                                        android:id="@+id/img_recommended_movie"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:src="@drawable/movie"
+                                        android:layout_gravity="center"
+                                        android:scaleType="centerCrop"
+                                        />
+                                </androidx.cardview.widget.CardView>
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:layout_marginStart="16dp"
+                                    android:orientation="vertical"
+                                    >
+                                    <TextView
+                                        android:id="@+id/title_recommended_movie"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Title"
+                                        android:ems="9"
+                                        android:maxLines="1"
+                                        android:ellipsize="end"
+                                        android:textSize="20dp"
+                                        android:textColor="@color/black"/>
+                                    <TextView
+                                        android:id="@+id/info_recommended_movie"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:text="Director"
+                                        android:textSize="16dp"
+                                        android:textColor="@color/black"/>
+                                </LinearLayout>
+                                <Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"/>
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/refresh_recommended_movie"
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:adjustViewBounds="true"
+                                    app:srcCompat="@drawable/main_ic_refresh"
+                                    android:layout_gravity="center"
+                                    />
+                            </LinearLayout>
+
+                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/txt_recommend_not_yet"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No Recommend !"
+                            android:gravity="center"
+                            android:textSize="32dp"
+                            />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5px"
+                            android:background="#C5DEDA"
+                            android:layout_marginTop="8dp"
+                            />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
